@@ -1,0 +1,35 @@
+#room {
+  height: 200px;
+	width:20%;
+	
+	border-style:solid;
+	border-color:#CCCCCC;
+	border-width:1px;
+	float: left;
+position:absolute;
+
+}
+#users {
+	  height: 200px;
+	width:20%;
+	
+	border-style:solid; 
+	border-color:#CCCCCC;
+	border-width:1px;
+	float: left;
+}
+#send {
+	width:10%;
+	top:300px;
+	position:absolute;
+	display: inline-block;
+	float: right;
+	
+}
+#message {
+	width:90%;
+	top:300px;
+	position:absolute;
+	display: inline-block;
+	
+}

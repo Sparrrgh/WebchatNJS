@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="room.css">
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	</head>
+	<body>
+	<header>
+		<h1>First page</h1>
+	</header>
+	<div id="room">
+			<input type="text" id="message" value="message"/>
+			<input type="button" id="send" value="send" onclick="sendMessage()" />
+	</div>
+	<div id="users">
+
+	</div>
+	</body>
+
+	<script>
+		function sendMessage(){
+			var message = document.getElementById('message').value;
+			var params = "message=" + message;
+			var http = new XMLHttpRequest();
+			var url = 'room';
+			http.open('POST', url, true);
+
+			//Send the proper header information along with the request
+			http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+			http.onreadystatechange = function() {//Call a function when the state changes.
+				if(http.readyState == 4 && http.status == 200) {
+					alert(http.responseText);
+				}
+			}
+			http.send(params);
+		}
+	</script>
+
+</html>
+	
