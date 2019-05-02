@@ -24,7 +24,7 @@
 	</body>
 
 	<script>
-
+		//AJAX request to subscribe to the longpollig and get a listener
 		function subscribe(callback) {
 			function longPoll(){
 				$.ajax({
@@ -32,9 +32,11 @@
 					url: '/room',
 					dataType: 'json',
 					success: function(data){
+						//When data is received it's added to the chatbox
 						$("#messages").append("<li>"+data+"</li>");;
 					},
 					complete: function(){
+						//After adding to the chatbox it starts to listen again for new data
 						longPoll()
 					},
 					error: function(){console.log("ERROR!")},
@@ -45,14 +47,14 @@
 		}
 
 		function sendMessage(){
+			//I create a JSON object and then make it in a string, naming could be better
 			var message = document.getElementById('message').value;
 			var messageObj = {message: message};
 			var messageObjJson = JSON.stringify(messageObj);
+			//Setup for the XHRequest
 			var XHR = new XMLHttpRequest();
 			var url = 'room';
 			XHR.open('POST', url, true);
-
-			//Send the proper header information along with the request
 			XHR.setRequestHeader('Content-type', 'application/json');
 			XHR.setRequestHeader('X-Requested-With',' XMLHttpRequest');
 			XHR.send(messageObjJson);
