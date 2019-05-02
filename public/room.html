@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="room.css">
+		<script src="jquery-3.4.0.min.js"></script>
+	</head>
+	<body>
+	<header>
+		<h1>Webchat </h1>
+	</header>
+	<div id="room">
+			<div >
+				<ul id="messages">
+
+				</ul>
+			</div>
+			<input type="text" id="message" value="message"/>
+			<input type="button" id="send" value="send" onclick="sendMessage()" />
+	</div>
+	<div id="users">
+
+	</div>
+	</body>
+
+	<script>
+
+		function subscribe(callback) {
+			function longPoll(){
+				$.ajax({
+					method: 'GET',
+					url: '/room',
+					dataType: 'json',
+					success: function(data){
+						$("#messages").append("<li>"+data+"</li>");;
+					},
+					complete: function(){
+						longPoll()
+					},
+					error: function(){console.log("ERROR!")},
+					timeout: 60000
+				})
+			}
+			longPoll()
+		}
+
+		function sendMessage(){
+			var message = document.getElementById('message').value;
+			var messageObj = {message: message};
+			var messageObjJson = JSON.stringify(messageObj);
+			var XHR = new XMLHttpRequest();
+			var url = 'room';
+			XHR.open('POST', url, true);
+
+			//Send the proper header information along with the request
+			XHR.setRequestHeader('Content-type', 'application/json');
+			XHR.setRequestHeader('X-Requested-With',' XMLHttpRequest');
+			XHR.send(messageObjJson);
+			console.log(messageObjJson + " sent");
+		}
+
+		$(document).ready(subscribe());
+	</script>
+
+</html>
+	

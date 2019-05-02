@@ -22,3 +22,7 @@ Backend:
 	-	Creazione utente	2h
 	-	Messaggi			4h
 	- 	Autenticazione		8h
+
+Dipendenze:
+	express
+		npm install express --save

@@ -1,55 +1,46 @@
-var http = require('http'),
-      fs = require('fs'),
-     url = require('url'),
-     qs = require('querystring');
+var express = require('express');
+var app = express();
+app.use(express.static('public'));
+app.use(express.json())
+var path = require('path');
+var EventEmitter = require('events').EventEmitter
+var messageBus = new EventEmitter();
+messageBus.setMaxListeners(100)
 
-http.createServer(function(request, response){
-    var path = url.parse(request.url).pathname;
-    if (request.url === '/room.css') {
-        fs.readFile('./room.css', function(err, file) {  
-            if(err) {  
-                console.log(err); 
-                return;
-            }
-            console.log("Room served")
-            response.writeHead(200, { 'Content-Type': 'text/css' });
-            response.end(file, "utf-8");
-        });
-      }
+//TMP test
+var messages = [];
+//---------
 
-    if(path=="/room"){
-        if(request.method === 'GET'){
-            fs.readFile('./room.html', function(err, file) {  
-                if(err) {  
-                    console.log(err); 
-                    return;
-                }
-                console.log("Room served")
-                response.writeHead(200, { 'Content-Type': 'text/html' });
-                response.end(file, "utf-8");
-            });
-        } else if(request.method === 'POST') {
-            
-            var queryData = "";
-            request.on('data', function(data) {
-                queryData += data;
-                if(queryData.length > 1e6) {
-                    queryData = "";
-                    response.writeHead(413, {'Content-Type': 'text/plain'}).end();
-                    request.connection.destroy();
-                }
-            });
-    
-            request.on('end', function() {
-                var testData = qs.parse(queryData);
-                console.log(testData);
-            });
-    
-        } 
-        /* else {
-            response.writeHead(405, {'Content-Type': 'text/plain'});
-            response.end();
-        } */
+
+app.get('/room', function (req, res) {
+    if(req.xhr){
+        var addMessageListener = function(res){
+            messageBus.once('messageSent', function(data){
+                res.json(messages[messages.length - 1]);
+            })
+        }
+        addMessageListener(res)
+        console.log("Added one listener");
+    }else{
+        res.sendFile(path.join(__dirname + '/public/' +'/room.html'));
+        console.log('Room served');
     }
-}).listen(8002);
-console.log("Server initialized");
+});
+
+app.post('/room',function (req, res) {
+    if(req.xhr){
+        console.log(req.body)
+        
+        var messageParsed =(req.body).message;
+        console.log('parsed ' + messageParsed);
+        messages.push(messageParsed);
+        console.log("Message sent: "+ messageParsed);
+        res.send("Sent");
+        //Warns that a message as been sent
+        messageBus.emit('messageSent');
+    }
+});
+
+app.listen(8080, function () {
+    console.log('Server intialized on port 8080');
+});
