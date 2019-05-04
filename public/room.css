@@ -1,35 +1,37 @@
 #room {
-  height: 200px;
+  	height: 200px;
 	width:20%;
-	
 	border-style:solid;
 	border-color:#CCCCCC;
 	border-width:1px;
 	float: left;
-position:absolute;
+	margin-right: 20%; 
 
 }
 #users {
-	  height: 200px;
+	height: 200px;
 	width:20%;
-	
 	border-style:solid; 
 	border-color:#CCCCCC;
 	border-width:1px;
 	float: left;
 }
-#send {
-	width:10%;
-	top:300px;
-	position:absolute;
+#sendMessage {
+	width:15%;
 	display: inline-block;
-	float: right;
 	
 }
-#message {
-	width:90%;
+#messagebox {
+	width:80%;
 	top:300px;
-	position:absolute;
 	display: inline-block;
-	
+}
+
+#chatbox {
+	height:200px;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow:hidden;
+	overflow-y:scroll;
 }
