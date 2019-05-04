@@ -8,20 +8,16 @@
 		<script type="text/javascript" src="room.js"></script>
 	</head>
 	<body>
-	<header>
-		<h1>Webchat </h1>
-	</header>
-	<div id="room">
-			<div >
-				<ul id="chatbox">
-
-				</ul>
-			</div>
-			<input type="text" id="messagebox" placeholder="Write here your message..."/>
-			<input type="button" id="sendMessage" value="Send" onclick="sendMessage()" />
-	</div>
-	<div id="users">
-	</div>
+		<header>
+			<h1 id="title">Webchat</h1>
+		</header>
+		<div id="room">
+				<ul id="chatbox"></ul>
+				<input type="text" id="messagebox" placeholder="Write here your message..."/>
+				<input type="button" id="sendButton" value="Send" onclick="sendMessage()" />
+		</div>
+		<div id="users">
+		</div>
 	</body>
 </html>
 	

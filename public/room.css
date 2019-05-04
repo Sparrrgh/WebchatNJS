@@ -1,11 +1,12 @@
 #room {
-  	height: 200px;
-	width:20%;
+  	height: 300px;
+	width:40%;
 	border-style:solid;
 	border-color:#CCCCCC;
 	border-width:1px;
 	float: left;
-	margin-right: 20%; 
+	margin-right: 15%; 
+	margin-left: 10%; 
 
 }
 #users {
@@ -16,22 +17,27 @@
 	border-width:1px;
 	float: left;
 }
-#sendMessage {
-	width:15%;
+#sendButton {
+	width:20%;
 	display: inline-block;
-	
+	text-align: center;
 }
 #messagebox {
-	width:80%;
-	top:300px;
+	width:75%;
+	bottom:1px;
 	display: inline-block;
 }
 
 #chatbox {
-	height:200px;
+	height: 300px;
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 	overflow:hidden;
 	overflow-y:scroll;
+}
+
+#title{
+	width: 100%;
+	text-align: center;
 }
