@@ -3,7 +3,8 @@
 	<head>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="room.css">
-		<script src="jquery-3.4.0.min.js"></script>
+		<script type="text/javascript" src="jquery-3.4.0.min.js"></script>
+		<script type="text/javascript" src="purify/purify.js"></script>
 	</head>
 	<body>
 	<header>
@@ -31,8 +32,10 @@
 					url: '/room',
 					dataType: 'json',
 					success: function(data){
+						//Purify the input data to prevent XSS
+						data = DOMPurify.sanitize(data);
 						//When data is received it's added to the chatbox
-						$("#chatbox").append("<li>"+data+"</li>");;
+						$("#chatbox").append("<li>"+data+"</li>");
 					},
 					complete: function(){
 						//After adding to the chatbox it starts to listen again for new data
