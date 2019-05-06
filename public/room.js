@@ -7,7 +7,7 @@ function subscribe(callback) {
             dataType: 'json',
             success: function(data){
                 //Purify the input data to prevent XSS
-                data = DOMPurify.sanitize(data);
+                data = DOMPurify.sanitize(data.value);
                 //When data is received it's added to the chatbox
                 $("#chatbox").append("<li>"+data+"</li>");
             },
