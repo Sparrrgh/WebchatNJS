@@ -26,16 +26,16 @@ function sendMessage(){
     //Save messagebox element to reuse later
     var messagebox = $("#messagebox")[0];
     //I create a JSON object and then make it in a string, naming could be better
-    var message = messagebox.value;
-    var messageObj = {message: message};
+    var messageObj = {message: messagebox.value};
     var messageObjJson = JSON.stringify(messageObj);
-    //Seting up and sending the XHRequest
-    var XHR = new XMLHttpRequest();
-    var url = 'room';
-    XHR.open('POST', url, true);
-    XHR.setRequestHeader('Content-type', 'application/json');
-    XHR.setRequestHeader('X-Requested-With',' XMLHttpRequest');
-    XHR.send(messageObjJson);
+    //Setting up and sending the XHRequest
+    $.ajax({
+        method: 'POST',
+        url: '/room',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: messageObjJson
+    })
     console.log(messageObjJson + " sent");
     //Clear messagebox
     messagebox.value = "";
