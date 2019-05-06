@@ -20,18 +20,20 @@ app.get('/room', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if (req.query.nu === '1'){
-        //send all "messages[]"
+            //send all "messages[]"
             res.json(messages);
+        } 
+        else{
+            //If it is I'll add a listener to wait for a message
+            var addMessageListener = function(res){
+                messageBus.once('messageSent', function(data){
+                    //When a message is sent I'll return it by taking it from the array
+                    res.json(messages[messages.length - 1]);
+                })
+            }
+            addMessageListener(res)
+            console.log("Added one listener");
         }
-        //If it is I'll add a listener to wait for a message
-        var addMessageListener = function(res){
-            messageBus.once('messageSent', function(data){
-                //When a message is sent I'll return it by taking it from the array
-                res.json(messages[messages.length - 1].value);
-            })
-        }
-        addMessageListener(res)
-        console.log("Added one listener");
     }else{
         //If a request is user-sent, I'll just return the chats UI
         res.sendFile(path.join(__dirname + '/public/' +'/room.html'));
