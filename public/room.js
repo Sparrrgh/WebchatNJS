@@ -1,10 +1,15 @@
 //AJAX request to subscribe to the longpollig and get a listener
 function subscribe() {
     function longPoll(){
+        var currentRoom = $("#currentRoom")[0].textContent;
         $.ajax({
             method: 'GET',
             url: '/room',
             dataType: 'json',
+            data: {
+                room : currentRoom,
+                nu : 0
+            },
             success: function(data){
                 //Purify the input data to prevent XSS
                 //When data is received it's added to the chatbox
@@ -15,7 +20,7 @@ function subscribe() {
                 longPoll()
             },
             error: function(){console.log("ERROR!")},
-            timeout: 60000
+            timeout: 4000
         });
     }
     longPoll()
@@ -24,8 +29,9 @@ function subscribe() {
 function sendMessage(){
     //Save messagebox element to reuse later
     var messagebox = $("#messagebox")[0];
+    var currentRoom = ($("#currentRoom")[0]).textContent;
     //I create a JSON object and then make it in a string, naming could be better
-    var messageObj = {value: messagebox.value};
+    var messageObj = {value: messagebox.value, room: currentRoom};
     var messageObjJson = JSON.stringify(messageObj);
     //Setting up and sending the XHRequest
     $.ajax({
@@ -47,12 +53,45 @@ $(document).ready(function(){
             sendMessage();
         }
     });
+    
+    //Change room
+    $(".roomChanger").click(function(event) {
+        var oldRoom = $("#currentRoom")[0];
+        //Check if the room has to change
+        if (oldRoom.textContent != event.target.value){
+            //Empty chatbox
+            $("#chatbox").empty();
+            //Save room in title (from button calling the event)
+            var currentRoom = event.target.value;
+            oldRoom.textContent = currentRoom;
+            //Request the messages from the new room
+            $.ajax({
+                method: 'GET',
+                url: '/room',
+                dataType: 'json',
+                data: {
+                    nu:1,
+                    room: currentRoom
+                },
+                success: function(data){
+                    //When data is received it's added to the chatbox
+                    data.forEach(element => {
+                    //Purify each and every element to prevent XSS, not exactly the fastest approach...
+                        $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
+                    });
+                }
+            });
+        }
+        
+    });
+    //Get elements from current room
     $.ajax({
         method: 'GET',
         url: '/room',
         dataType: 'json',
         data: {
-            nu:1
+            nu:1,
+            room: $("#currentRoom")[0].textContent
           },
         success: function(data){
             //When data is received it's added to the chatbox

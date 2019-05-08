@@ -8,6 +8,7 @@
 		<script type="text/javascript" src="room.js"></script>
 	</head>
 	<body>
+		<span id="currentRoom">General</span>
 		<header>
 			<h1 id="title">Webchat</h1>
 		</header>
@@ -17,6 +18,11 @@
 				<input type="button" id="sendButton" value="Send" onclick="sendMessage()" />
 		</div>
 		<div id="users">
+		</div>
+		<div id="rooms">
+			<input type="button" class="roomChanger" value="General" />
+			<input type="button" class="roomChanger" value="Test1" />
+			<input type="button" class="roomChanger" value="SKA" />
 		</div>
 	</body>
 </html>

@@ -17,6 +17,14 @@
 	border-width:1px;
 	float: left;
 }
+#rooms {
+	height: 200px;
+	width:20%;
+	border-style:solid; 
+	border-color:#CCCCCC;
+	border-width:1px;
+	float: left;
+}
 #sendButton {
 	width:20%;
 	display: inline-block;

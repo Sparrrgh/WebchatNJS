@@ -10,25 +10,40 @@ messageBus.setMaxListeners(100)
 //This array is to be exchanged with a DB later on
 var messages = [];
 //---------
-function messageObj(value) {
+function messageObj(value,room) {
     this.value= value;
     //this.user = user;
     //this.time = time;
+    this.room = room;
   }
 
 app.get('/room', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if (req.query.nu === '1'){
-            //send all "messages[]"
-            res.json(messages);
-        } 
+            //Send messages from the current room
+            var currentMessages = [];
+            //Create temporary array with messages from the current room
+            messages.forEach(m => {
+                if(m.room === req.query.room){
+                    currentMessages.push(m);
+                }
+            });
+            res.json(currentMessages); 
+        }
         else{
             //If it is I'll add a listener to wait for a message
             var addMessageListener = function(res){
                 messageBus.once('messageSent', function(data){
                     //When a message is sent I'll return it by taking it from the array
-                    res.json(messages[messages.length - 1]);
+                    //After checking if it is from the current room
+                    var new_message = messages[messages.length - 1]
+                    console.log("Message sent in room: " + new_message.room);
+                    if(new_message.room === req.query.room){
+                        res.json(new_message);
+                    } else{
+                        res.json("");
+                    }
                 })
             }
             addMessageListener(res)
@@ -45,7 +60,7 @@ app.post('/room',function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         //I parse the message and add it to the message array
-        var messageReceived =req.body;
+        var messageReceived = req.body;
         messages.push(messageReceived);
         console.log("Message sent: "+ messageReceived);
         res.send("Sent");
