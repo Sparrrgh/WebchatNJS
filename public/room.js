@@ -19,8 +19,8 @@ function subscribe() {
                 //After adding to the chatbox it starts to listen again for new data
                 longPoll()
             },
-            error: function(){console.log("ERROR!")},
-            timeout: 4000
+            error: function(xhr, ajaxOptions, thrownError){console.log("Error: " + thrownError)},
+            timeout: 60000
         });
     }
     longPoll()
@@ -74,11 +74,16 @@ $(document).ready(function(){
                     room: currentRoom
                 },
                 success: function(data){
-                    //When data is received it's added to the chatbox
-                    data.forEach(element => {
-                    //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                        $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
-                    });
+                    if(data.length > 0){
+                        //When data is received it's added to the chatbox
+                        data.forEach(element => {
+                            //Purify each and every element to prevent XSS, not exactly the fastest approach...
+                                $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
+                        });
+                    }
+                    else{
+                        console.log("No messages in the current room");
+                    }
                 }
             });
         }
@@ -94,11 +99,16 @@ $(document).ready(function(){
             room: $("#currentRoom")[0].textContent
           },
         success: function(data){
-            //When data is received it's added to the chatbox
-            data.forEach(element => {
-            //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
-            });
+            if(data.length > 0){
+                //When data is received it's added to the chatbox
+                data.forEach(element => {
+                    //Purify each and every element to prevent XSS, not exactly the fastest approach...
+                        $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
+                });
+            }
+            else{
+                console.log("No messages in the current room");
+            }
         }
     });
     //When the page is loaded the client subscribes to receive realtime data
