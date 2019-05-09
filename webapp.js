@@ -5,7 +5,39 @@ app.use(express.json())
 var path = require('path');
 var EventEmitter = require('events').EventEmitter
 var messageBus = new EventEmitter();
-messageBus.setMaxListeners(100)
+messageBus.setMaxListeners(100);
+
+const pg        = require('pg');
+const config = {
+    user: 'postgres',
+    database: 'messages',
+    password: 'root',
+    port: 5432
+};
+// pool takes the object above -config- as parameter
+const pool = new pg.Pool(config);
+app.get('/', (req, res, next) => {
+   pool.connect(function (err, client, done) {
+       if (err) {
+           console.log("Can not connect to the DB" + err);
+       }
+      
+       client.query('SELECT $1::int AS number', ['1'], function (err, result) {
+            done();
+            if (err) {
+                console.log(err);
+                res.status(400).send(err);
+            }
+            console.log("Connect to the DB" );
+            res.status(200).send(result.rows);
+       })
+      
+   })
+});
+app.listen(4000, function () {
+    console.log('Server is running.. on Port 4000');
+});
+
 
 //This array is to be exchanged with a DB later on
 var messages = [];
