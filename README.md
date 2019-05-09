@@ -26,3 +26,7 @@ Backend:
 Dipendenze:
 	express
 		npm install express --save
+		
+	PostgreSQL
+	PgAdmin 4
+		 npm install pg 
