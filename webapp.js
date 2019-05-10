@@ -7,10 +7,10 @@ var EventEmitter = require('events').EventEmitter
 var messageBus = new EventEmitter();
 messageBus.setMaxListeners(100);
 
-const pg        = require('pg');
+const pg  = require('pg');
 const config = {
     user: 'postgres',
-    database: 'messages',
+    database: 'chat_room',
     password: 'root',
     port: 5432
 };
@@ -42,12 +42,13 @@ app.listen(4000, function () {
 //This array is to be exchanged with a DB later on
 var messages = [];
 //---------
-function messageObj(value,room) {
+function messageObj(value,room,time) {
     this.value= value;
-    //this.user = user;
-    //this.time = time;
+    //this.email = email;
+    this.time = time;
     this.room = room;
   }
+
 
 app.get('/room', function (req, res) {
     //Check if it's a XMLHttpRequest
@@ -61,7 +62,7 @@ app.get('/room', function (req, res) {
                     currentMessages.push(m);
                 }
             });
-            res.json(currentMessages); 
+            res.json(currentMessages);
         }
         else{
             //If it is I'll add a listener to wait for a message
@@ -98,7 +99,6 @@ app.post('/room',function (req, res) {
         res.send("Sent");
         //Warns the listeners that a message has been sent
         messageBus.emit('messageSent');
-
     }
 });
 

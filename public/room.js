@@ -30,8 +30,11 @@ function sendMessage(){
     //Save messagebox element to reuse later
     var messagebox = $("#messagebox")[0];
     var currentRoom = ($("#currentRoom")[0]).textContent;
+    var timestamp=JSON.stringify(new Date());
+    var pars_time=JSON.parse(timestamp);
+    var time=new Date(pars_time);
     //I create a JSON object and then make it in a string, naming could be better
-    var messageObj = {value: messagebox.value, room: currentRoom};
+    var messageObj = {value: messagebox.value, room: currentRoom,time:time};
     var messageObjJson = JSON.stringify(messageObj);
     //Setting up and sending the XHRequest
     $.ajax({
