@@ -30,9 +30,26 @@ function sendMessage(){
     //Save messagebox element to reuse later
     var messagebox = $("#messagebox")[0];
     var currentRoom = ($("#currentRoom")[0]).textContent;
-    var timestamp=JSON.stringify(new Date());
+   /* var times=new Date();
+    var timestamp=JSON.stringify(times);
     var pars_time=JSON.parse(timestamp);
-    var time=new Date(pars_time);
+    var time=new Date(pars_time);*/
+    function getDateTime() {
+        var date = new Date();
+        var hour = date.getHours();
+        hour = (hour < 10 ? "0" : "") + hour;
+        var min  = date.getMinutes();
+        min = (min < 10 ? "0" : "") + min;
+        var sec  = date.getSeconds();
+        sec = (sec < 10 ? "0" : "") + sec;
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        month = (month < 10 ? "0" : "") + month;
+        var day  = date.getDate();
+        day = (day < 10 ? "0" : "") + day;
+        return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
+    }
+   var time=getDateTime();
     //I create a JSON object and then make it in a string, naming could be better
     var messageObj = {value: messagebox.value, room: currentRoom,time:time};
     var messageObjJson = JSON.stringify(messageObj);

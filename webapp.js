@@ -7,7 +7,13 @@ var EventEmitter = require('events').EventEmitter
 var messageBus = new EventEmitter();
 messageBus.setMaxListeners(100);
 
-
+//connection to db
+const {Client}=require('pg')
+const connectionString='postgressql://postgres:root@localhost:5433/chat_room'
+const client=new Client({
+    connectionString: connectionString
+})
+client.connect()
 
 
 //This array is to be exchanged with a DB later on
@@ -19,18 +25,6 @@ function messageObj(value,room,time) {
     this.time = time;
     this.room = room;
   }
-
-const {Client}=require('pg')
-const connectionString='postgressql://postgres:root@localhost:5433/chat_room'
-const client=new Client({
-    connectionString: connectionString
-})
-client.connect()
-client.query('select * from users',(err,res)=> {
-    console.log(err,res)
-    client.end()
-})
-
 
 app.get('/room', function (req, res) {
     //Check if it's a XMLHttpRequest
@@ -76,6 +70,16 @@ app.post('/room',function (req, res) {
     if(req.xhr){
         //I parse the message and add it to the message array
         var messageReceived = req.body;
+        const text = 'INSERT INTO messages(value, room ,time) VALUES($1, $2, $3) RETURNING *'
+        const values = [messageReceived.value,messageReceived.room, messageReceived.time]
+        client.query(text, values, (err, res) => {
+            if (err) {
+              console.log(err.stack)
+            } else {
+              console.log(res.rows[0])
+            }
+          })
+   
         messages.push(messageReceived);
         console.log("Message sent: "+ messageReceived);
         res.send("Sent");
