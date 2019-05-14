@@ -1,4 +1,4 @@
-#room {
+#chat {
   	height: 300px;
 	width:40%;
 	border-style:solid;
@@ -25,6 +25,16 @@
 	border-width:1px;
 	float: left;
 }
+
+#roomList{
+	list-style-type: none;
+	overflow-y:scroll;
+}
+
+#createRoomDialog{
+	margin-left:20%;
+}
+
 #sendButton {
 	width:20%;
 	display: inline-block;
