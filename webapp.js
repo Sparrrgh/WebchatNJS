@@ -29,18 +29,6 @@ function messageObj(value,room,time) {
     this.room = room;
   }
 
-const {Client}=require('pg')
-const connectionString='postgressql://postgres:root@localhost:5433/chat_room'
-const client=new Client({
-    connectionString: connectionString
-client.connect()
-})
-    console.log(err,res)
-client.query('select * from users',(err,res)=> {
-})
-    client.end()
-
-
 app.get('/chat', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
