@@ -13,7 +13,7 @@ const connectionString='postgressql://postgres:root@localhost:5433/chat_room'
 const client=new Client({
     connectionString: connectionString
 })
-client.connect()
+client.connect();
 
 
 //This array is to be exchanged with a DB later on
@@ -30,15 +30,21 @@ app.get('/room', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if (req.query.nu === '1'){
-            //Send messages from the current room
-            var currentMessages = [];
-            //Create temporary array with messages from the current room
-            messages.forEach(m => {
-                if(m.room === req.query.room){
-                    currentMessages.push(m);
+            var currentMessages=[]; 
+            const query = {
+                    // give the query a unique name
+                name: 'fetch-room',
+                text: 'SELECT * FROM messages WHERE room = $1 ',
+                values: [req.query.room]
+                }
+            client.query(query, (err, k) => {
+                if (err) {
+                    console.log(err.stack)
+                } else {
+                    currentMessages=k.rows;
+                    res.json(currentMessages);
                 }
             });
-            res.json(currentMessages);
         }
         else{
             //If it is I'll add a listener to wait for a message
