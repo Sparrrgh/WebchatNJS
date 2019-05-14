@@ -41,7 +41,7 @@ client.query('select * from users',(err,res)=> {
     client.end()
 
 
-app.get('/room', function (req, res) {
+app.get('/chat', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if (req.query.nu === '1'){
