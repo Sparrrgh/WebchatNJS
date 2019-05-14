@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="chat.css">
+		<script type="text/javascript" src="jquery-3.4.0.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script type="text/javascript" src="purify/purify.js"></script>
+		<script type="text/javascript" src="chat.js"></script>
+	</head>
+	<body>
+		<span id="currentRoom">General</span>
+		<header>
+			<h1 id="title">Webchat</h1>
+		</header>
+		<div id="chat">
+				<ul id="chatbox"></ul>
+				<input type="text" id="messagebox" placeholder="Write here your message..."/>
+				<input type="button" id="sendButton" value="Send" onclick="sendMessage()" />
+		</div>
+		<div id="users">
+		</div>
+		<div id="rooms">
+			<ul id="roomList">
+				<li name="General"><input type="button" class="roomChanger" value="General"/></li>
+			</ul>
+			<input type="button" id="createRoomDialog" value="Create room"/>
+		</div>
+		<div id="dialog" title="Create new room">
+			<input type="text" id="createRoomName"/>
+			<input type="button" id="createRoom" value="Create"/>
+		</div>
+	</body>
+</html>
+	

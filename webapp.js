@@ -1,11 +1,13 @@
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/public'));
-app.use(express.json())
+app.use(express.json());
 var path = require('path');
 var EventEmitter = require('events').EventEmitter
 var messageBus = new EventEmitter();
 messageBus.setMaxListeners(100);
+var roomBus = new EventEmitter();
+roomBus.setMaxListeners(100);
 
 //connection to db
 const {Client}=require('pg')
@@ -18,6 +20,7 @@ client.connect();
 
 //This array is to be exchanged with a DB later on
 var messages = [];
+var rooms = [];
 //---------
 function messageObj(value,room,time) {
     this.value= value;
@@ -26,7 +29,7 @@ function messageObj(value,room,time) {
     this.room = room;
   }
 
-app.get('/room', function (req, res) {
+app.get('/chat', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if (req.query.nu === '1'){
@@ -62,16 +65,16 @@ app.get('/room', function (req, res) {
                 })
             }
             addMessageListener(res)
-            console.log("Added one listener");
+            console.log("Added one message listener");
         }
     }else{
         //If a request is user-sent, I'll just return the chats UI
-        res.sendFile(path.join(__dirname + '/public/' +'/room.html'));
+        res.sendFile(path.join(__dirname + '/public/' +'/chat.html'));
         console.log('Room served');
     }
 });
 
-app.post('/room',function (req, res) {
+app.post('/chat',function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         //I parse the message and add it to the message array
@@ -94,6 +97,42 @@ app.post('/room',function (req, res) {
     }
 });
 
+
+//Rooms listener
+
+app.post('/rooms',function (req, res) {
+    //Check if it's a XMLHttpRequest
+    if(req.xhr){
+        //I parse the message and add it to the message array
+        var roomReceived = req.body;
+        rooms.push(roomReceived);
+        console.log("Room sent: "+ roomReceived.room);
+        res.send("Sent new room");
+        //Warns the listeners that a room has been sent
+        roomBus.emit('roomSent');
+    }
+});
+
+app.get('/rooms', function (req, res) {
+    //Check if it's a XMLHttpRequest
+    if(req.xhr){
+        if(req.query.nu === '1'){
+            //Send rooms
+            res.json(rooms);
+        }else{
+            //If it is I'll add a listener to wait for a room
+            var addRoomListener = function(res){
+                roomBus.once('roomSent', function(data){
+                    //When a room is sent I'll return it by taking it from the array
+                    var new_room = rooms[rooms.length - 1]
+                    res.json(new_room);
+                })
+            }
+            addRoomListener(res)
+            console.log("Added one room listener");
+        }
+    }
+});
 
 
 app.listen(8080, function () {
