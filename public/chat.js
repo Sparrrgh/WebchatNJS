@@ -32,7 +32,7 @@ $(document).ready(function(){
                 success: function(data){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the roomlist
-                    $("#roomList").append('<li><input type="button" class="roomChanger" value="'+DOMPurify.sanitize(data.room)+'"/></li>');
+                    $("#roomList").append('<li><input type="button" class="roomChanger" value="'+DOMPurify.sanitize(data.name)+'"/></li>');
                 },
                 complete: function(){
                     //After adding to the chatbox it starts to listen again for new data
@@ -102,7 +102,7 @@ $(document).ready(function(){
     $("#createRoom").click(function(event) {
         var newRoom = ($("#createRoomName")[0]).value;
         //I create a JSON object and then make it in a string, naming could be better
-        var roomObj = {room: newRoom};
+        var roomObj = {name: newRoom};
         var roomObjJson = JSON.stringify(roomObj);
         $("#createRoomName")[0].value = "";
         $.ajax({
@@ -136,9 +136,9 @@ $(document).ready(function(){
                 success: function(data){
                     if(data.length > 0){
                         //When data is received it's added to the chatbox
-                        data.forEach(element => {
+                        data.forEach(message => {
                             //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                                $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
+                                $("#chatbox").append("<li>"+DOMPurify.sanitize(message.value)+"</li>");
                         });
                     }
                     else{
@@ -164,9 +164,9 @@ $(document).ready(function(){
         success: function(data){
             if(data.length > 0){
                 //When data is received it's added to the chatbox
-                data.forEach(element => {
+                data.forEach(message => {
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                        $("#chatbox").append("<li>"+DOMPurify.sanitize(element.value)+"</li>");
+                        $("#chatbox").append("<li>"+DOMPurify.sanitize(message.value)+"</li>");
                 });
             }
             else{
@@ -185,9 +185,9 @@ $(document).ready(function(){
         success: function(data){
             if(data.length > 0){
                 //When data is received it's added to the chatbox
-                data.forEach(element => {
+                data.forEach(room => {
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                    $("#roomList").append('<li><input type="button" class="roomChanger" value="'+DOMPurify.sanitize(element.room)+'"/></li>');
+                    $("#roomList").append('<li><input type="button" class="roomChanger" value="'+DOMPurify.sanitize(room.name)+'"/></li>');
                 });
             }
             else{

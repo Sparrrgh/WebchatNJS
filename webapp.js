@@ -17,11 +17,6 @@ const client=new Client({
 })
 client.connect();
 
-
-//This array is to be exchanged with a DB later on
-var messages = [];
-var rooms = [];
-//---------
 function messageObj(value,room,time) {
     this.value= value;
     //this.email = email;
@@ -32,20 +27,19 @@ function messageObj(value,room,time) {
 app.get('/chat', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
+        //Send all messages from the current room
         if (req.query.nu === '1'){
-            var currentMessages=[]; 
             const query = {
-                    // give the query a unique name
-                name: 'fetch-room',
+                // give the query a unique name
+                name: 'fetch-messages-room',
                 text: 'SELECT * FROM messages WHERE room = $1 ',
                 values: [req.query.room]
                 }
-            client.query(query, (err, k) => {
+            client.query(query, (err, table) => {
                 if (err) {
                     console.log(err.stack)
                 } else {
-                    currentMessages=k.rows;
-                    res.json(currentMessages);
+                    res.json(table.rows);
                 }
             });
         }
@@ -55,13 +49,25 @@ app.get('/chat', function (req, res) {
                 messageBus.once('messageSent', function(data){
                     //When a message is sent I'll return it by taking it from the array
                     //After checking if it is from the current room
-                    var new_message = messages[messages.length - 1]
-                    console.log("Message sent in room: " + new_message.room);
-                    if(new_message.room === req.query.room){
-                        res.json(new_message);
-                    } else{
-                        res.json("");
-                    }
+                    const query = {
+                        // give the query a unique name
+                        name: 'fetch-last-message',
+                        text: 'SELECT * FROM messages ORDER BY ID DESC LIMIT 1'
+                        }
+                    client.query(query, (err, table) => {
+                        if (err) {
+                            console.log(err.stack)
+                        } else {
+                            var new_message = table.rows[0];
+                            console.log("Message sent in room: " + new_message.room);
+                            if(new_message.room === req.query.room){
+                                res.json(new_message);
+                            } else{
+                                res.json("");
+                            }
+                        }
+                    });
+                    
                 })
             }
             addMessageListener(res)
@@ -77,19 +83,11 @@ app.get('/chat', function (req, res) {
 app.post('/chat',function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
-        //I parse the message and add it to the message array
+        //I parse the message and add it to the database
         var messageReceived = req.body;
-        const text = 'INSERT INTO messages(value, room ,time) VALUES($1, $2, $3) RETURNING *'
+        const text = 'INSERT INTO messages(value, room ,time) VALUES($1, $2, $3)'
         const values = [messageReceived.value,messageReceived.room, messageReceived.time]
-        client.query(text, values, (err, res) => {
-            if (err) {
-              console.log(err.stack)
-            } else {
-              console.log(res.rows[0])
-            }
-          })
-   
-        messages.push(messageReceived);
+        client.query(text, values);
         console.log("Message sent: "+ messageReceived);
         res.send("Sent");
         //Warns the listeners that a message has been sent
@@ -103,10 +101,12 @@ app.post('/chat',function (req, res) {
 app.post('/rooms',function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
-        //I parse the message and add it to the message array
+        //I parse the room and add it to the database
         var roomReceived = req.body;
-        rooms.push(roomReceived);
-        console.log("Room sent: "+ roomReceived.room);
+        const text = 'INSERT INTO rooms(name) VALUES($1)'
+        const values = [roomReceived.name]
+        client.query(text, values);
+        console.log("Room sent: "+ roomReceived.name);
         res.send("Sent new room");
         //Warns the listeners that a room has been sent
         roomBus.emit('roomSent');
@@ -117,15 +117,37 @@ app.get('/rooms', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if(req.query.nu === '1'){
-            //Send rooms
-            res.json(rooms);
+            //Send all rooms
+            const query = {
+                // give the query a unique name
+                name: 'fetch-rooms',
+                text: 'SELECT * FROM rooms'
+                }
+            client.query(query, (err, table) => {
+                if (err) {
+                    console.log(err.stack)
+                } else {
+                    res.json(table.rows);
+                }
+            });
         }else{
             //If it is I'll add a listener to wait for a room
             var addRoomListener = function(res){
                 roomBus.once('roomSent', function(data){
                     //When a room is sent I'll return it by taking it from the array
-                    var new_room = rooms[rooms.length - 1]
-                    res.json(new_room);
+                    const query = {
+                        // give the query a unique name
+                        name: 'fetch-last-room',
+                        text: 'SELECT * FROM rooms ORDER BY ID DESC LIMIT 1'
+                        }
+                    client.query(query, (err, table) => {
+                        if (err) {
+                            console.log(err.stack)
+                        } else {
+                            //Sends the last room added
+                            res.json(table.rows[0]);
+                        }
+                    });
                 })
             }
             addRoomListener(res)
