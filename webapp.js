@@ -85,13 +85,17 @@ app.post('/chat',function (req, res) {
     if(req.xhr){
         //I parse the message and add it to the database
         var messageReceived = req.body;
-        const text = 'INSERT INTO messages(value, room ,time) VALUES($1, $2, $3)'
-        const values = [messageReceived.value,messageReceived.room, messageReceived.time]
-        client.query(text, values);
-        console.log("Message sent: "+ messageReceived);
-        res.send("Sent");
-        //Warns the listeners that a message has been sent
-        messageBus.emit('messageSent');
+        //Checks if the message is formed by only spaces through a regex
+        if(!(!(messageReceived.value).replace(/\s/g, '').length)){
+            const text = 'INSERT INTO messages(value, room ,time) VALUES($1, $2, $3)'
+            const values = [messageReceived.value,messageReceived.room, messageReceived.time]
+            client.query(text, values);
+            console.log("Message sent: "+ messageReceived);
+            res.send("Message sent");
+            //Warns the listeners that a message has been sent
+            messageBus.emit('messageSent');
+        }
+        res.send("Message not sent");
     }
 });
 
@@ -101,15 +105,21 @@ app.post('/chat',function (req, res) {
 app.post('/rooms',function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
-        //I parse the room and add it to the database
         var roomReceived = req.body;
-        const text = 'INSERT INTO rooms(name) VALUES($1)'
-        const values = [roomReceived.name]
-        client.query(text, values);
-        console.log("Room sent: "+ roomReceived.name);
-        res.send("Sent new room");
-        //Warns the listeners that a room has been sent
-        roomBus.emit('roomSent');
+        //Checks if the room name is formed by only spaces through a regex
+        if(!(!(roomReceived.name).replace(/\s/g, '').length)){
+            //I parse the room and add it to the database
+            const text = 'INSERT INTO rooms(name) VALUES($1)'
+            const values = [roomReceived.name]
+            client.query(text, values);
+            console.log("Room sent: "+ roomReceived.name);
+            res.send("New room created");
+            //Warns the listeners that a room has been sent
+            roomBus.emit('roomSent');
+        } else { 
+            res.send("Room not created");
+        }
+        
     }
 });
 

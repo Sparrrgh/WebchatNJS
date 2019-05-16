@@ -49,40 +49,43 @@ $(document).ready(function(){
     function sendMessage(){
         //Save messagebox element to reuse later
         var messagebox = $("#messagebox")[0];
-        var currentRoom = ($("#currentRoom")[0]).textContent;
-        /*var timestamp=JSON.stringify(new Date());
-        var pars_time=JSON.parse(timestamp);
-        var time=new Date(pars_time);*/
-        function getDateTime() {
-            var date = new Date();
-            var hour = date.getHours();
-            hour = (hour < 10 ? "0" : "") + hour;
-            var min  = date.getMinutes();
-            min = (min < 10 ? "0" : "") + min;
-            var sec  = date.getSeconds();
-            sec = (sec < 10 ? "0" : "") + sec;
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            month = (month < 10 ? "0" : "") + month;
-            var day  = date.getDate();
-            day = (day < 10 ? "0" : "") + day;
-            return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
+        //Checks if the message is formed by only spaces through a regex
+        if(!(!(messagebox.value).replace(/\s/g, '').length)){
+            var currentRoom = ($("#currentRoom")[0]).textContent;
+            /*var timestamp=JSON.stringify(new Date());
+            var pars_time=JSON.parse(timestamp);
+            var time=new Date(pars_time);*/
+            function getDateTime() {
+                var date = new Date();
+                var hour = date.getHours();
+                hour = (hour < 10 ? "0" : "") + hour;
+                var min  = date.getMinutes();
+                min = (min < 10 ? "0" : "") + min;
+                var sec  = date.getSeconds();
+                sec = (sec < 10 ? "0" : "") + sec;
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                month = (month < 10 ? "0" : "") + month;
+                var day  = date.getDate();
+                day = (day < 10 ? "0" : "") + day;
+                return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
+            }
+           var time=getDateTime();
+            //I create a JSON object and then make it in a string, naming could be better
+            var messageObj = {value: messagebox.value, room: currentRoom,time:time};
+            var messageObjJson = JSON.stringify(messageObj);
+            //Setting up and sending the XHRequest
+            $.ajax({
+                method: 'POST',
+                url: '/chat',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: messageObjJson
+            });
+            console.log(messageObjJson + " sent");
+            //Clear messagebox
+            messagebox.value = "";
         }
-       var time=getDateTime();
-        //I create a JSON object and then make it in a string, naming could be better
-        var messageObj = {value: messagebox.value, room: currentRoom,time:time};
-        var messageObjJson = JSON.stringify(messageObj);
-        //Setting up and sending the XHRequest
-        $.ajax({
-            method: 'POST',
-            url: '/chat',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: messageObjJson
-        });
-        console.log(messageObjJson + " sent");
-        //Clear messagebox
-        messagebox.value = "";
     }
 
     //Checks for enters to send the message
@@ -94,24 +97,28 @@ $(document).ready(function(){
 
     //Opens the dialog
     $("#createRoomDialog").click(function(event) {
-        // $("#dialog").display = "inline";
         $("#dialog").dialog("open");
     });
 
     //Sends POST request to create new room
     $("#createRoom").click(function(event) {
         var newRoom = ($("#createRoomName")[0]).value;
-        //I create a JSON object and then make it in a string, naming could be better
-        var roomObj = {name: newRoom};
-        var roomObjJson = JSON.stringify(roomObj);
-        $("#createRoomName")[0].value = "";
-        $.ajax({
-            method: 'POST',
-            url: '/rooms',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: roomObjJson
-        });
+        //Checks if the room name is formed by only spaces through a regex
+        if(!(!newRoom.replace(/\s/g, '').length)){
+            //I create a JSON object and then make it in a string, naming could be better
+            var roomObj = {name: newRoom};
+            var roomObjJson = JSON.stringify(roomObj);
+            $("#createRoomName")[0].value = "";
+            $.ajax({
+                method: 'POST',
+                url: '/rooms',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: roomObjJson
+            });
+            $("#dialog").dialog('close'); 
+        }
+        
     });
     
     //Change room buttons
