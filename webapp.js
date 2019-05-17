@@ -17,13 +17,6 @@ const client=new Client({
 })
 client.connect();
 
-function messageObj(value,room,time) {
-    this.value= value;
-    //this.email = email;
-    this.time = time;
-    this.room = room;
-  }
-
 app.get('/chat', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
