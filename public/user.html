@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login and registration</title>
+  <script type="text/javascript" src="jquery-3.4.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="user.css">
+  <script type="text/javascript" src="user.js"></script>
+</head>
+<body>
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">LOGIN</a></li>
+    <li><a href="#tabs-2">SIGN IN </a></li>
+  </ul>
+  <div id="tabs-1">
+    <form id="credentialsLogin" name="credentialsLogin">
+      <input type="text" id="userLogin"class="class" placeholder="Add your username" /><br/>
+      <input type="text" id="passwdLogin" class="class"  placeholder="Add your password"/><br/><br/><br/>
+      <input type="submit" value="SEND" id="sendLogin" class="send" onclick="sendlogin()">
+   </form>
+  </div>
+  <div id="tabs-2">
+    <form id="credentialsSign" name="credentialsSign">
+      <input type="text" id="nameSign" class="class" placeholder="Add your name" /><br/>
+      <input type="text" id="surSign" class="class"  placeholder="Add your surname"/><br/>
+      <input type="text" id="emailSign" class="class" placeholder="Add your email" /><br/>
+      <input type="date" id="dateSign"  class="class"  placeholder="Add your date of birth"/><br/> 
+      <input type="text" id="userSign" class="class" placeholder="Add your username" /><br/>
+      <input type="text" id="passwdSign" class="class"  placeholder="Add your password"/><br/>
+      <input type="text" id="repeteSign" class="class"  placeholder="Repete your password" /><br/><br/><br/>
+      <input type="submit" id="sendSign" class="send" value="SEND" onclick="sendsign()" />
+   </form>
+  
+</div>
+ 
+ 
+</body>
+</html>

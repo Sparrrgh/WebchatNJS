@@ -31,16 +31,5 @@ Dipendenze:
 	PgAdmin 4
 		 npm install pg 
 		 
-PER VEDERE SE ABBIAMO IL DB COLLEGATO
-		-schiaccia icona
-		-simbolo maggiore Servers
-		-simbolo maggiore PostgreSQL 9.3
-		-chat room
-		-apri dal menù in alto Tools
-		-Query Tool
-		-select * from messages
-		-simbolo fulmine
-		-ultimo messaggio "ok vediamo se va"
-		
-prova a inserire qualcosa e poi scrivimi,che apro e vedo se si è modificato
+
 		
