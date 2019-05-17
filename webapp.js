@@ -84,11 +84,13 @@ app.post('/chat',function (req, res) {
             const values = [messageReceived.value,messageReceived.room, messageReceived.time]
             client.query(text, values);
             console.log("Message sent: "+ messageReceived);
-            res.send("Message sent");
+            res.sendStatus(200);
             //Warns the listeners that a message has been sent
             messageBus.emit('messageSent');
+        } else {
+            //If the message is composed of only spaces I send a Bad Request status code
+            res.sendStatus(400); 
         }
-        res.send("Message not sent");
     }
 });
 
@@ -106,11 +108,12 @@ app.post('/rooms',function (req, res) {
             const values = [roomReceived.name]
             client.query(text, values);
             console.log("Room sent: "+ roomReceived.name);
-            res.send("New room created");
+            res.sendStatus(200);
             //Warns the listeners that a room has been sent
             roomBus.emit('roomSent');
-        } else { 
-            res.send("Room not created");
+        } else {  
+            //If the room name is composed of only spaces I send a Bad Request status code
+            res.sendStatus(400);
         }
         
     }
@@ -157,6 +160,10 @@ app.get('/rooms', function (req, res) {
             console.log("Added one room listener");
         }
     }
+});
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/' +'/user.html'));
 });
 
 
