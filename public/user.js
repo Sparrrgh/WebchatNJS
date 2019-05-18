@@ -1,67 +1,33 @@
 $( function() {
     $( "#tabs" ).tabs();
   })
-var dateToday = new Date();
-var yyyy = dateToday.getFullYear();
-function sendsign(){
-    //check not null value
-    if (credentialsSign.nameSign.value == ""){
-        alert("Error: insert your name!");
-        return false
-      }
-    if (credentialsSign.surSign.value == ""){
-    alert("Error: insert your surname!");
-    return false
-    }
-    if (credentialsSign.emailSign.value == ""){
-    alert("Error: insert your email!");
-    return false
-    }
-    if (credentialsSign.dateSign.value == ""){
-    alert("Error: insert your date of birth!");
-    return false
-    }
-  
-    if (credentialsSign.userSign.value == ""){
-    alert("Error: insert your username!");
-    return false
-    }
-    if (credentialsSign.passwdSign.value == ""){
-    alert("Error: insert your password!");
-    return false
-    }
-    if (credentialsSign.repeteSign.value == ""){
-        alert("Error: repete your password!");
-        return false
-    }
-    // check identical password
-    if (credentialsSign.passwdSign.value != credentialsSign.repeteSign.value) {
-        alert("Error: passwords are not identical.Repete please!")
-        return false
-    }
-      // check legal
-      if ((yyyy-parseInt(credentialsSign.dateSign.value))<17) {
-        alert("Error: you aren't legal!")
-        return false
-    }
-  
-     // check correct email 
-    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-    if (!reg.test(credentialsSign.emailSign.value)) {
-        alert("Error: your email isn't correct.Repete please!")
-        return false;
-    } 
-    return true;
-}
+
 function sendlogin(){
-    //check not null value
-    if (credentialsLogin.userLogin.value == ""){
-    alert("Error: insert your username!");
-    return false
-    }
-    if (credentialsLogin.passwdLogin.value == ""){
-    alert("Error: insert your password!");
-    return false
-    } 
-    return true;
+    var loginObj = {username: credentialsLogin.userLogin.value, password: credentialsLogin.passwdLogin.value};
+    var loginObjJson = JSON.stringify(loginObj);
+    $.ajax({
+        method: 'POST',
+        url: '/login',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: loginObjJson
+    });
+    //Clear input type
+    credentialsLogin.nameLogin.value = "";
+    credentialsLogin.passwdLogin.value="";
+}
+
+function sendsign(){
+    var signObj = {username: credentialsSign.userSign.value, password: credentialsSign.passwdSign.value};
+    var signObjJson = JSON.stringify(signObj);
+    $.ajax({
+        method: 'POST',
+        url: '/register',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: signObjJson
+    });
+    //Clear input type
+    credentialsSign.nameSign.value = "";
+    credentialsSign.passwdSign.value="";
 }
