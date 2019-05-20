@@ -1,8 +1,19 @@
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var path = require('path');
+var bcrypt = require('bcryptjs');
+var session = require('express-session')
+
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
-var path = require('path');
+app.use(session({
+    secret: 'who cares', resave: false, saveUninitialized: false 
+  }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 var EventEmitter = require('events').EventEmitter
 var messageBus = new EventEmitter();
 messageBus.setMaxListeners(100);
@@ -17,7 +28,59 @@ const client=new Client({
 })
 client.connect();
 
-app.get('/chat', function (req, res) {
+
+passport.use(new LocalStrategy((username, password, callback) => {
+    client.query('SELECT id, username, password FROM users WHERE username=$1', [username], (err, result) => {
+      if(err) {
+        console.log('Error when selecting user on login  ' + err);
+        return callback(err);
+      }
+  
+      if(result.rows.length > 0) {
+        const first = result.rows[0];
+        bcrypt.compare(password, first.password, function(err, res) {
+          if(res) {
+            console.log('logged');
+            callback(null, { id: first.id, username: first.username });
+           } else {
+            console.log(err);
+            callback(null, false);
+           }
+         })
+       } else {
+        console.log('other err');
+        callback(null, false);
+       }
+    });
+  }));
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+})
+  
+passport.deserializeUser((id, callback) => {
+    client.query('SELECT id, username FROM users WHERE id = $1', [parseInt(id, 10)], (err, results) => {
+        if(err) {
+        console.log('Error when selecting user on session deserialize ' + err)
+        return callback(err)
+        }
+
+        callback(null, results.rows[0])
+    })
+})
+
+app.post('/login', passport.authenticate('local', { successRedirect: '/chat',
+failureRedirect: '/' }));
+
+function isAuthenticated(req, res, next) {
+    if (req.isAuthenticated()){
+        return next();
+    } else{ 
+        res.redirect('/');
+    }
+  }
+
+app.get('/chat', isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         //Send all messages from the current room
@@ -73,17 +136,17 @@ app.get('/chat', function (req, res) {
     }
 });
 
-app.post('/chat',function (req, res) {
+app.post('/chat', isAuthenticated,function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         //I parse the message and add it to the database
         var messageReceived = req.body;
+        console.log("sent a message: " + req.user.username);
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messageReceived.value).replace(/\s/g, '').length)){
-            const text = 'INSERT INTO messages(value, room ,time) VALUES($1, $2, $3)'
-            const values = [messageReceived.value,messageReceived.room, messageReceived.time]
+            const text = 'INSERT INTO messages(value, room ,time, username) VALUES($1, $2, $3, $4)'
+            const values = [messageReceived.value,messageReceived.room, messageReceived.time, req.user.username]
             client.query(text, values);
-            console.log("Message sent: "+ messageReceived);
             res.sendStatus(200);
             //Warns the listeners that a message has been sent
             messageBus.emit('messageSent');
@@ -97,7 +160,7 @@ app.post('/chat',function (req, res) {
 
 //Rooms listener
 
-app.post('/rooms',function (req, res) {
+app.post('/rooms',isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         var roomReceived = req.body;
@@ -119,7 +182,7 @@ app.post('/rooms',function (req, res) {
     }
 });
 
-app.get('/rooms', function (req, res) {
+app.get('/rooms',isAuthenticated ,function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if(req.query.nu === '1'){

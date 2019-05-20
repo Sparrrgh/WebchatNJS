@@ -14,7 +14,7 @@ $(document).ready(function(){
                 success: function(data){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the chatbox
-                    $("#chatbox").append("<li>"+DOMPurify.sanitize(data.value)+"</li>");
+                    $("#chatbox").append("<li>" + data.username+ ":  " + DOMPurify.sanitize(data.value)+"</li>");
                 },
                 complete: function(){
                     //After adding to the chatbox it starts to listen again for new data
@@ -145,7 +145,7 @@ $(document).ready(function(){
                         //When data is received it's added to the chatbox
                         data.forEach(message => {
                             //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                                $("#chatbox").append("<li>"+DOMPurify.sanitize(message.value)+"</li>");
+                                $("#chatbox").append("<li>"+ message.username +":    " + DOMPurify.sanitize(message.value)+"</li>");
                         });
                     }
                     else{
@@ -173,7 +173,7 @@ $(document).ready(function(){
                 //When data is received it's added to the chatbox
                 data.forEach(message => {
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                        $("#chatbox").append("<li>"+DOMPurify.sanitize(message.value)+"</li>");
+                        $("#chatbox").append("<li>"+ message.username +":    " + DOMPurify.sanitize(message.value)+"</li>");
                 });
             }
             else{

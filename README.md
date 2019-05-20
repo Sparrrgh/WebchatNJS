@@ -29,7 +29,15 @@ Dipendenze:
 		
 	PostgreSQL
 	PgAdmin 4
-		 npm install pg 
+		 npm install pg
+	passport
+		npm install passport --save
+	passport-local
+		npm install passport --save
+	bcryptjs
+		npm install bcryptjs
+	express-session
+		npm install express-session
 		 
 
 		
