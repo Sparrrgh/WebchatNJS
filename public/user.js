@@ -13,7 +13,7 @@ function sendlogin(){
         data: loginObjJson
     });
     //Clear input type
-    credentialsLogin.nameLogin.value = "";
+    credentialsLogin.userLogin.value = "";
     credentialsLogin.passwdLogin.value="";
 }
 
@@ -28,6 +28,6 @@ function sendsign(){
         data: signObjJson
     });
     //Clear input type
-    credentialsSign.nameSign.value = "";
+    credentialsSign.userSign.value = "";
     credentialsSign.passwdSign.value="";
 }
