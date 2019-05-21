@@ -9,25 +9,26 @@
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="user.css">
   <script type="text/javascript" src="user.js"></script>
+  
 </head>
 <body>
 <div id="tabs">
   <ul>
-    <li><a href="#tabs-1">LOGIN</a></li>
-    <li><a href="#tabs-2">SIGN UP </a></li>
+    <li class="active"><a href="#tabs-1">LOGIN</a></li>
+    <li ><a href="#tabs-2">SIGN UP </a></li>
   </ul>
   <div id="tabs-1">
     <form id="credentialsLogin" name="credentialsLogin">
       <input type="text" id="userLogin"class="class" placeholder="Add your username" /><br/>
       <input type="password" id="passwdLogin" class="class"  placeholder="Add your password"/><br/><br/><br/>
-      <input type="button" value="SEND" id="sendLogin" class="send" onclick="sendlogin()">
+      <input type="button" value="Send" id="sendLogin" class="send" onclick="sendlogin()">
    </form>
   </div>
   <div id="tabs-2">
     <form id="credentialsSign" name="credentialsSign">
       <input type="text" id="userSign" class="class" placeholder="Add your username" /><br/>
       <input type="password" id="passwdSign" class="class"  placeholder="Add your password"/><br/><br/><br/>
-      <input type="button" id="sendSign" class="send" value="SEND" onclick="sendsign()" />
+      <input type="button" id="sendSign" class="send" value="Send" onclick="sendsign()" />
    </form>
   
 </div>

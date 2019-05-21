@@ -10,22 +10,29 @@
 		<script type="text/javascript" src="chat.js"></script>
 	</head>
 	<body>
-		<span id="currentRoom">General</span>
+		<div id="here">
+		<span >You are in room: </span>
+		<span id="currentRoom" >General</span>
+	</div>
 		<header>
-			<h1 id="title">Webchat</h1>
+	
 		</header>
 		<div id="chat">
-				<ul id="chatbox"></ul>
+				<ul id="chatbox" ></ul>
 				<input type="text" id="messagebox" placeholder="Write here your message..."/>
 				<input type="button" id="sendButton" value="Send" onclick="sendMessage()" />
 		</div>
 		<div id="users">
+			<h2>Users</h2>
 		</div>
 		<div id="rooms">
-			<ul id="roomList">
+			<h2>Rooms</h2>
+			<input type="button" id="createRoomDialog" value="Create room"/>
+			<h4>Room list</h4>
+			<ul id="roomList" class="scroll">
 				<li name="General"><input type="button" class="roomChanger" value="General"/></li>
 			</ul>
-			<input type="button" id="createRoomDialog" value="Create room"/>
+			
 		</div>
 		<div id="dialog" title="Create new room">
 			<input type="text" id="createRoomName"/>

@@ -1,51 +1,100 @@
+body{
+	background-color: 	rgb(10, 10, 10);
+	color:	#DAA520;
+}
+h2{
+	text-align: center;
+	font-style: italic;
+	margin:0;
+}
+h4{
+	text-align: center;
+	font-style: bold;
+	margin-top:10px;
+	margin-bottom:5px;
+}
+
+#here{
+	text-align: center;
+	font-style: italic;
+	margin-bottom: 5%;
+	font-size: 50px;
+}
 #chat {
   	height: 300px;
 	width:40%;
 	border-style:solid;
-	border-color:#CCCCCC;
+	border-color:	#DAA520;
+	color: 		#DAA520;
 	border-width:1px;
 	float: left;
 	margin-right: 15%; 
 	margin-left: 10%; 
-
 }
 #users {
-	height: 200px;
+	height: 180px;
 	width:20%;
 	border-style:solid; 
-	border-color:#CCCCCC;
+	border-color:#DAA520;
 	border-width:1px;
 	float: left;
 }
 #rooms {
-	height: 200px;
+	height: 180px;
 	width:20%;
+	margin-top:1%;
 	border-style:solid; 
-	border-color:#CCCCCC;
+	border-color:		#DAA520;
 	border-width:1px;
 	float: left;
 }
-
-#roomList{
-	list-style-type: none;
-	overflow-y:scroll;
+#createRoom{
+	color:		#DAA520;
+	border: 2px solid	#DAA520;
+  	border-radius: 4px;
+	background-color: rgb(10, 10, 10);
+}
+#dialog{
+	background-color:		#DAA520;
+	 color: rgb(10, 10, 10);
 }
 
 #createRoomDialog{
-	margin-left:20%;
+	margin-left:25%;
+	margin-top:10px;
+	color:			#DAA520;
+	border: 2px solid#DAA520;
+  	border-radius: 4px;
+	background-color: rgb(10, 10, 10);
 }
-
+.ui-dialog-titlebar-ui-corner-all-ui-widget-header-ui-helper-clearfix-ui-draggable-handle{
+	background-color:		#DAA520;
+	 color: rgb(10, 10, 10);
+}
 #sendButton {
 	width:20%;
 	display: inline-block;
 	text-align: center;
+	margin-top: 5%;
+	color:		#DAA520;
+	border: 2px solid	#DAA520;
+  	border-radius: 4px;
+	background-color: rgb(10, 10, 10);
 }
 #messagebox {
 	width:75%;
 	bottom:1px;
 	display: inline-block;
+	background-color:rgb(10, 10, 10);;
+	margin-top: 5%;
+	border: 2px solid		#DAA520;
+  	border-radius: 4px;
+  	color:	#DAA520;
 }
-
+::-webkit-input-placeholder { 
+	color:		#C0C0C0;
+	text-align: center;
+}
 #chatbox {
 	height: 300px;
 	list-style-type: none;
@@ -55,8 +104,24 @@
 	overflow-y:scroll;
 	word-wrap:break-word;
 }
-
 #title{
 	width: 100%;
 	text-align: center;
 }
+
+#roomList{
+	list-style-type: none;
+	overflow-y:scroll;
+	color:	#DAA520;
+	padding:0;
+	margin-top: 0;
+}
+.roomChanger{
+	background-color: 	rgb(10, 10, 10);
+	color:#DAA520;
+	border: 2px solid	#DAA520;
+	width:100%;
+	
+}
+
+
