@@ -83,10 +83,10 @@ app.post('/register', function (req, res) {
 });
 
 app.post('/login',
-  passport.authenticate('local', { successRedirect: '/chat',
-                                   failureRedirect: '/',
-                                   failureFlash: true })
-);
+    passport.authenticate('local'),
+    function(req, res) {
+        res.send({redirect: '/chat'});
+  });
 
 app.get('/logout', function(req, res){
     req.logout();
@@ -247,7 +247,11 @@ app.get('/rooms',isAuthenticated ,function (req, res) {
 });
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/' +'/user.html'));
+    if(req.user){
+        res.redirect('/chat');
+    } else{
+        res.sendFile(path.join(__dirname + '/public/' +'/user.html'));
+    }
 });
 
 

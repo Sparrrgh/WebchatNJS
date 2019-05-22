@@ -10,7 +10,10 @@ function sendlogin(){
         url: '/login',
         dataType: 'json',
         contentType: 'application/json',
-        data: loginObjJson
+        data: loginObjJson,
+        success: function(data){
+            window.location = data.redirect
+        }
     });
     //Clear input type
     credentialsLogin.userLogin.value = "";
@@ -25,7 +28,10 @@ function sendsign(){
         url: '/register',
         dataType: 'json',
         contentType: 'application/json',
-        data: signObjJson
+        data: signObjJson,
+        success: function(data){
+            window.location = data.redirect
+        }
     });
     //Clear input type
     credentialsSign.userSign.value = "";
