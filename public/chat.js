@@ -14,7 +14,10 @@ $(document).ready(function(){
                 success: function(data){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the chatbox
-                    $("#chatbox").append("<li>" +"["+ DOMPurify.sanitize(message.time)+"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
+                    var chatbox = $("#chatbox");
+                    chatbox.append("<li>" + "["+ data.time +"] "+ "<span>" + data.username   +":</span> " + DOMPurify.sanitize(data.value)+"</li>");
+                    //Scroll the div to the bottom
+                    chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
                 },
                 complete: function(){
                     //After adding to the chatbox it starts to listen again for new data
@@ -45,6 +48,12 @@ $(document).ready(function(){
         longPollRoom();
         longPollMessage();
     }
+
+    window.setInterval(function() {
+        var elem = $('#chatbox');
+        elem.scrollTop = elem.scrollHeight;
+      }, 3000);
+      
 
     function sendMessage(){
         //Save messagebox element to reuse later
@@ -166,10 +175,13 @@ $(document).ready(function(){
                 success: function(data){
                     if(data.length > 0){
                         //When data is received it's added to the chatbox
+                        var chatbox = $("#chatbox");
                         data.forEach(message => {
                             //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                                $("#chatbox").append("<li>" +"["+ DOMPurify.sanitize(message.time)+"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
+                            chatbox.append("<li>" + "["+ message.time +"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
                         });
+                        //Scroll the div to the bottom
+                        chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
                     }
                     else{
                         console.log("No messages in the current room");
@@ -193,11 +205,14 @@ $(document).ready(function(){
           },
         success: function(data){
             if(data.length > 0){
+                var chatbox = $("#chatbox")
                 //When data is received it's added to the chatbox
                 data.forEach(message => {
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                        $("#chatbox").append("<li>" +"["+ DOMPurify.sanitize(message.time)+"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
+                    chatbox.append("<li>" + "["+ message.time +"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
                 });
+                //Scroll the div to the bottom
+                chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
             }
             else{
                 console.log("No messages in the current room");
