@@ -165,8 +165,8 @@ app.post('/chat', isAuthenticated,function (req, res) {
         console.log("sent a message: " + req.user.username);
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messageReceived.value).replace(/\s/g, '').length)){
-            const text = 'INSERT INTO messages(value, room ,time, username) VALUES($1, $2, $3, $4)'
-            const values = [messageReceived.value,messageReceived.room, messageReceived.time, req.user.username]
+            const text = 'INSERT INTO messages(value, room ,time, username, today) VALUES($1, $2, $3, $4, $5)'
+            const values = [messageReceived.value,messageReceived.room, messageReceived.time, req.user.username,messageReceived.today]
             client.query(text, values);
             res.sendStatus(200);
             //Warns the listeners that a message has been sent
