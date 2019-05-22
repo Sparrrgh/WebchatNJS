@@ -2,6 +2,10 @@ body{
 	background-color: 	rgb(10, 10, 10);
 	color:	#DAA520;
 }
+#t{
+	float:right;
+	color:red;
+}
 h2{
 	text-align: center;
 	font-style: italic;

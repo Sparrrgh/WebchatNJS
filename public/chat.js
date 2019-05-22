@@ -14,7 +14,7 @@ $(document).ready(function(){
                 success: function(data){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the chatbox
-                    $("#chatbox").append("<li>" + "<span>" + data.username + " :</span> " + DOMPurify.sanitize(data.value)+"</li>");
+                    $("#chatbox").append("<li>" + "<span>" + data.username + " :</span> " + DOMPurify.sanitize(data.value)+DOMPurify.sanitize(data.time)+"</li>");
                 },
                 complete: function(){
                     //After adding to the chatbox it starts to listen again for new data
@@ -52,9 +52,6 @@ $(document).ready(function(){
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messagebox.value).replace(/\s/g, '').length)){
             var currentRoom = ($("#currentRoom")[0]).textContent;
-            /*var timestamp=JSON.stringify(new Date());
-            var pars_time=JSON.parse(timestamp);
-            var time=new Date(pars_time);*/
             function getDateTime() {
                 var date = new Date();
                 var hour = date.getHours();
@@ -63,16 +60,22 @@ $(document).ready(function(){
                 min = (min < 10 ? "0" : "") + min;
                 var sec  = date.getSeconds();
                 sec = (sec < 10 ? "0" : "") + sec;
+                return   hour + ":" + min + ":" + sec;
+            }
+            function getDateDay() {
+                var date = new Date();
                 var year = date.getFullYear();
                 var month = date.getMonth() + 1;
                 month = (month < 10 ? "0" : "") + month;
                 var day  = date.getDate();
                 day = (day < 10 ? "0" : "") + day;
-                return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
+                return year + "/" + month + "/" + day;
             }
+            var today=getDateDay();
+            console.log(today);
            var time=getDateTime();
             //I create a JSON object and then make it in a string, naming could be better
-            var messageObj = {value: messagebox.value, room: currentRoom,time:time};
+            var messageObj = {value: messagebox.value, room: currentRoom,time:time,today:today};
             var messageObjJson = JSON.stringify(messageObj);
             //Setting up and sending the XHRequest
             $.ajax({
@@ -165,7 +168,7 @@ $(document).ready(function(){
                         //When data is received it's added to the chatbox
                         data.forEach(message => {
                             //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                                $("#chatbox").append("<li>" + "<span>" + message.username + " :</span> " + DOMPurify.sanitize(message.value)+"</li>");
+                                $("#chatbox").append("<li>" +"["+ DOMPurify.sanitize(message.time)+"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
                         });
                     }
                     else{
@@ -193,7 +196,7 @@ $(document).ready(function(){
                 //When data is received it's added to the chatbox
                 data.forEach(message => {
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                        $("#chatbox").append("<li>" + "<span>" + message.username + " :</span> " + DOMPurify.sanitize(message.value)+"</li>");
+                        $("#chatbox").append("<li>" +"["+ DOMPurify.sanitize(message.time)+"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
                 });
             }
             else{
