@@ -40,7 +40,7 @@ passport.use(new LocalStrategy((username, password, callback) => {
         const first = result.rows[0];
         bcrypt.compare(password, first.password, function(err, res) {
           if(res) {
-            console.log('logged');
+            console.log(first.username + ' logged');
             callback(null, { id: first.id, username: first.username });
            } else {
             console.log(err);
@@ -71,6 +71,21 @@ passport.deserializeUser((id, callback) => {
 
 app.post('/login', passport.authenticate('local', { successRedirect: '/chat',
 failureRedirect: '/' }));
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(req.body.password, salt);
+        client.query('INSERT INTO users(username, password) VALUES($1, $2)', [req.body.username, hash], (err, results) => {
+            if(err) {
+            console.log('Error when inserting user' + err)
+            }
+        })
+        console.log(req.body.username + ": "+ hash +' saved');
+    }
+});
+
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});
 
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
@@ -78,7 +93,7 @@ function isAuthenticated(req, res, next) {
     } else{ 
         res.redirect('/');
     }
-  }
+}
 
 app.get('/chat', isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
@@ -88,7 +103,7 @@ app.get('/chat', isAuthenticated, function (req, res) {
             const query = {
                 // give the query a unique name
                 name: 'fetch-messages-room',
-                text: 'SELECT * FROM messages WHERE room = $1 ',
+                text: 'SELECT * FROM messages WHERE room = $1 ORDER BY time',
                 values: [req.query.room]
                 }
             client.query(query, (err, table) => {
@@ -108,7 +123,7 @@ app.get('/chat', isAuthenticated, function (req, res) {
                     const query = {
                         // give the query a unique name
                         name: 'fetch-last-message',
-                        text: 'SELECT * FROM messages ORDER BY ID DESC LIMIT 1'
+                        text: 'SELECT * FROM messages ORDER BY TIME DESC LIMIT 1'
                         }
                     client.query(query, (err, table) => {
                         if (err) {
