@@ -95,6 +95,26 @@ $(document).ready(function(){
         }
     });
 
+    //Checks if sendbutton is clicked
+    $('#sendButton').on('click', function(e){
+        sendMessage();
+    });
+
+    //Checks if sendbutton is clicked
+    $('#logout').on('click', function(e){
+        $.ajax({
+            method: 'GET',
+            url: '/logout',
+            dataType: 'json',
+            contentType: 'application/json',
+            complete: function(data){
+                window.location = ("/");
+            }
+        });
+
+    });
+
+
     //Opens the dialog
     $("#createRoomDialog").click(function(event) {
         $("#dialog").dialog("open");

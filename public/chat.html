@@ -9,18 +9,16 @@
 		<script type="text/javascript" src="purify/purify.js"></script>
 		<script type="text/javascript" src="chat.js"></script>
 	</head>
-	<body>
+	<body>	
+		<input type="button" id="logout" value="Logout"/>
 		<div id="here">
-		<span >You are in room: </span>
-		<span id="currentRoom" >General</span>
-	</div>
-		<header>
-	
-		</header>
+			<span >You are in room: </span>
+			<span id="currentRoom" >General</span>
+		</div>
 		<div id="chat">
 				<ul id="chatbox" ></ul>
 				<input type="text" id="messagebox" placeholder="Write here your message..."/>
-				<input type="button" id="sendButton" value="Send" onclick="sendMessage()" />
+				<input type="button" id="sendButton" value="Send"/>
 		</div>
 		<div id="users">
 			<h2>Users</h2>
