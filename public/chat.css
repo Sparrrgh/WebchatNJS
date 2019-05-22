@@ -13,7 +13,6 @@ h4{
 	margin-top:10px;
 	margin-bottom:5px;
 }
-
 #here{
 	text-align: center;
 	font-style: italic;
@@ -44,31 +43,30 @@ h4{
 	width:20%;
 	margin-top:1%;
 	border-style:solid; 
-	border-color:		#DAA520;
+	border-color:#DAA520;
 	border-width:1px;
 	float: left;
 }
 #createRoom{
-	color:		#DAA520;
-	border: 2px solid	#DAA520;
-  	border-radius: 4px;
-	background-color: rgb(10, 10, 10);
+	background-color:rgb(10, 10, 10);
+	color:#DAA520;
+	border-color:#DAA520;
 }
 #dialog{
-	background-color:		#DAA520;
-	 color: rgb(10, 10, 10);
+	color:#DAA520;
+	background-color: rgb(10, 10, 10);
+	border-color:#DAA520;
 }
-
 #createRoomDialog{
 	margin-left:25%;
 	margin-top:10px;
-	color:			#DAA520;
+	color:	#DAA520;
 	border: 2px solid#DAA520;
   	border-radius: 4px;
 	background-color: rgb(10, 10, 10);
 }
 .ui-dialog-titlebar-ui-corner-all-ui-widget-header-ui-helper-clearfix-ui-draggable-handle{
-	background-color:		#DAA520;
+	background-color:#DAA520;
 	 color: rgb(10, 10, 10);
 }
 #sendButton {
@@ -76,7 +74,7 @@ h4{
 	display: inline-block;
 	text-align: center;
 	margin-top: 5%;
-	color:		#DAA520;
+	color:#DAA520;
 	border: 2px solid	#DAA520;
   	border-radius: 4px;
 	background-color: rgb(10, 10, 10);
@@ -87,12 +85,12 @@ h4{
 	display: inline-block;
 	background-color:rgb(10, 10, 10);;
 	margin-top: 5%;
-	border: 2px solid		#DAA520;
+	border: 2px solid #DAA520;
   	border-radius: 4px;
   	color:	#DAA520;
 }
 ::-webkit-input-placeholder { 
-	color:		#C0C0C0;
+	color:	#C0C0C0;
 	text-align: center;
 }
 #chatbox {
@@ -108,7 +106,6 @@ h4{
 	width: 100%;
 	text-align: center;
 }
-
 #roomList{
 	list-style-type: none;
 	overflow-y:scroll;
@@ -117,11 +114,10 @@ h4{
 	margin-top: 0;
 }
 .roomChanger{
-	background-color: 	rgb(10, 10, 10);
+	background-color: rgb(10, 10, 10);
 	color:#DAA520;
 	border: 2px solid	#DAA520;
 	width:100%;
-	
 }
 
 

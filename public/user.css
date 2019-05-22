@@ -6,16 +6,21 @@ body{
     width:400px;
     margin-left:25%;
     margin-right:25%;
-    color: 	rgb(10, 10, 10);
-	background-color:	#DAA520;
+    background-color: 	rgb(10, 10, 10);
+    color:	#DAA520;
+    border: 2px solid #DAA520;
+    border-radius: 4px;
 }
-
-#tabs li a {
-    color:#C0C0C0;
-   background-color:	rgb(10, 10, 10);
+a {
+    color:#DAA520;
+    background-color:	rgb(10, 10, 10);
+}
+.av{
+    background-color:#DAA520;
+   color:	rgb(10, 10, 10);
 }
 #tabs ul {
-    background-color:#C0C0C0;
+    background-color:rgb(10, 10, 10);
 }
 #dateSign{
     text-align:center;
@@ -27,20 +32,15 @@ body{
      margin-right:25%;
      text-align:center;
  }
- .send{
-     width:100px;
-     height:50px;
-     margin-left: 30%;
-     margin-right:30%;
- }
+
 #sendLogin{
 	width:20%;
 	display: inline-block;
 	text-align: center;
     margin-top: 5%;
     margin-left:40%;
-	color:		#C0C0C0;
-	border: 2px solid #C0C0C0;
+	color:	#DAA520;
+	border: 2px solid #DAA520;
   	border-radius: 4px;
 	background-color: rgb(10, 10, 10);
 }
@@ -50,18 +50,22 @@ body{
 	text-align: center;
 	margin-top: 5%;
 	margin-left:40%;
-	color:		#C0C0C0;
-	border: 2px solid #C0C0C0;
+	color:	#DAA520;
+	border: 2px solid #DAA520;
   	border-radius: 4px;
 	background-color: rgb(10, 10, 10);
 }
 input[type=text]{
-    color:		#C0C0C0;
+    color:		#DAA520;
+    border: 2px solid #DAA520;
+  	border-radius: 4px;
     text-align: center;
     background-color: rgb(10, 10, 10); 
 }
 input[type=password]{
-    color:		#C0C0C0;
+    color:		#DAA520;
+    border: 2px solid #DAA520;
+  	border-radius: 4px;
     text-align: center;
     background-color: rgb(10, 10, 10); 
 }

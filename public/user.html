@@ -9,12 +9,19 @@
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="user.css">
   <script type="text/javascript" src="user.js"></script>
-  
+  <script >
+    $(document).ready(function(){
+      $("ul li a").click(function(){
+        $("a").removeClass("av");
+        $(this).addClass("av");
+      })
+    });
+  </script>
 </head>
 <body>
 <div id="tabs">
   <ul>
-    <li class="active"><a href="#tabs-1">LOGIN</a></li>
+    <li ><a href="#tabs-1" class="av">LOGIN</a></li>
     <li ><a href="#tabs-2">SIGN UP </a></li>
   </ul>
   <div id="tabs-1">
