@@ -49,12 +49,6 @@ $(document).ready(function(){
         longPollMessage();
     }
 
-    window.setInterval(function() {
-        var elem = $('#chatbox');
-        elem.scrollTop = elem.scrollHeight;
-      }, 3000);
-      
-
     function sendMessage(){
         //Save messagebox element to reuse later
         var messagebox = $("#messagebox")[0];
