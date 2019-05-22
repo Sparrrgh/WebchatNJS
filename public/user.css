@@ -3,7 +3,6 @@ body{
 	color:	#DAA520;
 }
 #tabs{
-    width:400px;
     margin-left:25%;
     margin-right:25%;
     background-color: 	rgb(10, 10, 10);
@@ -14,6 +13,7 @@ body{
 a {
     color:#DAA520;
     background-color:	rgb(10, 10, 10);
+    
 }
 .av{
     background-color:#DAA520;
@@ -21,6 +21,7 @@ a {
 }
 #tabs ul {
     background-color:rgb(10, 10, 10);
+    
 }
 #dateSign{
     text-align:center;

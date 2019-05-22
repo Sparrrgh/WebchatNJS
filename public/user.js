@@ -20,6 +20,7 @@ function sendlogin(){
     credentialsLogin.passwdLogin.value="";
 }
 
+
 function sendsign(){
     var signObj = {username: credentialsSign.userSign.value, password: credentialsSign.passwdSign.value};
     var signObjJson = JSON.stringify(signObj);
@@ -37,3 +38,16 @@ function sendsign(){
     credentialsSign.userSign.value = "";
     credentialsSign.passwdSign.value="";
 }
+
+$(document).on('keypress',function(e) {
+    if(e.which == 13) {
+        if ($(".av")[0].textContent==="LOGIN"){
+            sendlogin();
+            console.log("login sent");
+        }
+        else {
+            sendsign();
+            console.log("sign up sent");
+        }
+    }
+});

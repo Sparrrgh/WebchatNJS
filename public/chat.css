@@ -55,6 +55,9 @@ h4{
 	background-color:rgb(10, 10, 10);
 	color:#DAA520;
 	border-color:#DAA520;
+	margin-left:25%;
+	margin-right:25%;
+	width:49%;
 }
 #dialog{
 	color:#DAA520;
