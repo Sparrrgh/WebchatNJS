@@ -1,10 +1,6 @@
 body{
-	background-color: 	rgb(10, 10, 10);
+	background-color: rgb(10, 10, 10);
 	color:	#DAA520;
-}
-#t{
-	float:right;
-	color:red;
 }
 h2{
 	text-align: center;
@@ -27,8 +23,8 @@ h4{
   	height: 300px;
 	width:40%;
 	border-style:solid;
-	border-color:	#DAA520;
-	color: 		#DAA520;
+	border-color:#DAA520;
+	color:#DAA520;
 	border-width:1px;
 	float: left;
 	margin-right: 15%; 
@@ -51,13 +47,16 @@ h4{
 	border-width:1px;
 	float: left;
 }
+#logout{
+	background-color:rgb(10, 10, 10);
+	color:#DAA520;
+	border-color:#DAA520;
+	width:10%;
+}
 #createRoom{
 	background-color:rgb(10, 10, 10);
 	color:#DAA520;
 	border-color:#DAA520;
-	margin-left:25%;
-	margin-right:25%;
-	width:49%;
 }
 #dialog{
 	color:#DAA520;
@@ -67,14 +66,14 @@ h4{
 #createRoomDialog{
 	margin-left:25%;
 	margin-top:10px;
-	color:	#DAA520;
+	color:#DAA520;
 	border: 2px solid#DAA520;
   	border-radius: 4px;
-	background-color: rgb(10, 10, 10);
+	background-color:rgb(10, 10, 10);
 }
 .ui-dialog-titlebar-ui-corner-all-ui-widget-header-ui-helper-clearfix-ui-draggable-handle{
 	background-color:#DAA520;
-	 color: rgb(10, 10, 10);
+	 color:rgb(10, 10, 10);
 }
 #sendButton {
 	width:20%;
@@ -82,9 +81,9 @@ h4{
 	text-align: center;
 	margin-top: 5%;
 	color:#DAA520;
-	border: 2px solid	#DAA520;
+	border: 2px solid #DAA520;
   	border-radius: 4px;
-	background-color: rgb(10, 10, 10);
+	background-color:rgb(10, 10, 10);
 }
 #messagebox {
 	width:75%;
@@ -94,10 +93,10 @@ h4{
 	margin-top: 5%;
 	border: 2px solid #DAA520;
   	border-radius: 4px;
-  	color:	#DAA520;
+  	color:#DAA520;
 }
 ::-webkit-input-placeholder { 
-	color:	#C0C0C0;
+	color:#C0C0C0;
 	text-align: center;
 }
 #chatbox {
@@ -116,15 +115,27 @@ h4{
 #roomList{
 	list-style-type: none;
 	overflow-y:scroll;
-	color:	#DAA520;
+	color:#DAA520;
 	padding:0;
 	margin-top: 0;
 }
 .roomChanger{
 	background-color: rgb(10, 10, 10);
 	color:#DAA520;
-	border: 2px solid	#DAA520;
+	border: 2px solid #DAA520;
 	width:100%;
 }
-
-
+#createRoomName {
+	display: inline-block;
+	background-color:rgb(10, 10, 10);;
+	border: 2px solid #DAA520;
+  	border-radius: 4px;
+  	color:#DAA520;
+}
+div.ui-dialog.ui-corner-all.ui-widget.ui-widget-content.ui-front.ui-draggable.ui-resizable{
+	background-color:#DAA520;
+}
+div.ui-dialog-titlebar.ui-corner-all.ui-widget-header.ui-helper-clearfix.ui-draggable-handle{
+	background-color:rgb(10, 10, 10);
+	color:#DAA520;
+}

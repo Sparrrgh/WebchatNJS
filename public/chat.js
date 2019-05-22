@@ -14,7 +14,7 @@ $(document).ready(function(){
                 success: function(data){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the chatbox
-                    $("#chatbox").append("<li>" + "<span>" + data.username + " :</span> " + DOMPurify.sanitize(data.value)+DOMPurify.sanitize(data.time)+"</li>");
+                    $("#chatbox").append("<li>" +"["+ DOMPurify.sanitize(message.time)+"] "+ "<span>" + message.username   +":</span> " + DOMPurify.sanitize(message.value)+"</li>");
                 },
                 complete: function(){
                     //After adding to the chatbox it starts to listen again for new data
