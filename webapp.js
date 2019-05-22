@@ -69,8 +69,8 @@ passport.deserializeUser((id, callback) => {
     })
 })
 
-app.post('/login', passport.authenticate('local', { successRedirect: '/chat',
-failureRedirect: '/' }));
+app.post('/register', function (req, res) {
+    if(req.xhr){
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(req.body.password, salt);
         client.query('INSERT INTO users(username, password) VALUES($1, $2)', [req.body.username, hash], (err, results) => {
