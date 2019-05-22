@@ -82,6 +82,12 @@ app.post('/register', function (req, res) {
     }
 });
 
+app.post('/login',
+  passport.authenticate('local', { successRedirect: '/chat',
+                                   failureRedirect: '/',
+                                   failureFlash: true })
+);
+
 app.get('/logout', function(req, res){
     req.logout();
     res.redirect('/');
