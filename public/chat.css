@@ -10,8 +10,6 @@ h2{
 h4{
 	text-align: center;
 	font-style: bold;
-	margin-top:10px;
-	margin-bottom:5px;
 }
 #here{
 	text-align: center;
@@ -31,7 +29,7 @@ h4{
 	margin-left: 10%; 
 }
 #users {
-	height: 180px;
+	height: 160px;
 	width:20%;
 	border-style:solid; 
 	border-color:#DAA520;
@@ -39,7 +37,7 @@ h4{
 	float: left;
 }
 #rooms {
-	height: 180px;
+	height: 200px;
 	width:20%;
 	margin-top:1%;
 	border-style:solid; 
@@ -66,8 +64,9 @@ h4{
 	border-color:#DAA520;
 }
 #createRoomDialog{
-	margin-left:35%;
-	margin-top:10px;
+	margin-left:30%;
+	margin-right:30%;
+	margin-top:10%;
 	color:#DAA520;
 	border: 2px solid#DAA520;
   	border-radius: 4px;
@@ -79,7 +78,7 @@ h4{
 	 color:rgb(10, 10, 10);
 }
 #sendButton {
-	width:15%;
+	width:16%;
 	display: inline-block;
 	text-align: center;
 	margin-top: 3%;
@@ -89,7 +88,7 @@ h4{
 	background-color:rgb(10, 10, 10);
 }
 #messagebox {
-	width:80%;
+	width:82%;
 	bottom:1px;
 	display: inline-block;
 	background-color:rgb(10, 10, 10);;
