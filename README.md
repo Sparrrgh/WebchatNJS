@@ -35,9 +35,13 @@ Dipendenze:
 	passport-local
 		npm install passport --save
 	bcryptjs
-		npm install bcryptjs
+		npm install bcryptjs --save
 	express-session
-		npm install express-session
+		npm install express-session --save
+	dompurify
+		npm install dompurify --save
+	jsdom
+		npm install jsdom --save
 		 
 
 		

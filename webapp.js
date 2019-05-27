@@ -3,6 +3,12 @@ var LocalStrategy = require('passport-local').Strategy;
 var path = require('path');
 var bcrypt = require('bcryptjs');
 var session = require('express-session')
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+ 
+const window = (new JSDOM('')).window;
+const DOMPurify = createDOMPurify(window);
+
 
 var express = require('express');
 var app = express();
@@ -71,18 +77,20 @@ passport.deserializeUser((id, callback) => {
 
 app.post('/register', function (req, res) {
     if(req.xhr){
+        //Sanitize username for further use
+        var sanitizedUsername = DOMPurify.sanitize(req.body.username);
         //Checks if password and username are both made of non-space characters
-        if((!(!(req.body.username).replace(/\s/g, '').length)) && (!(!(req.body.password).replace(/\s/g, '').length))){
+        if((!(!sanitizedUsername.replace(/\s/g, '').length)) && (!(!(req.body.password).replace(/\s/g, '').length))){
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(req.body.password, salt);
-            client.query('INSERT INTO users(username, password) VALUES($1, $2)', [req.body.username, hash], (err, results) => {
+            client.query('INSERT INTO users(username, password) VALUES($1, $2)', [sanitizedUsername, hash], (err, results) => {
                 if(err) {
                     console.log('Error when inserting user ' + err)
                     res.statusMessage = err;
                     res.status(400).end();
                 }
             })
-            console.log(req.body.username + ": "+ hash +' saved');
+            console.log(sanitizedUsername + ": "+ hash +' saved');
         } else{
             res.statusMessage = "Password or username not valid";
             res.status(400).end();
@@ -188,6 +196,8 @@ app.post('/chat', isAuthenticated,function (req, res) {
     if(req.xhr){
         //I parse the message and add it to the database
         var messageReceived = req.body;
+        //Sanitize the message body for further use
+        messageReceived.value = DOMPurify.sanitize(messageReceived.value)
         console.log("sent a message: " + req.user.username);
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messageReceived.value).replace(/\s/g, '').length)){
@@ -210,14 +220,15 @@ app.post('/chat', isAuthenticated,function (req, res) {
 app.post('/rooms',isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
-        var roomReceived = req.body;
+        //Sanitized the room name for further use
+        var roomNameSanitized= DOMPurify.sanitize(req.body.name)
         //Checks if the room name is formed by only spaces through a regex
-        if(!(!(roomReceived.name).replace(/\s/g, '').length)){
+        if(!(!roomNameSanitized.replace(/\s/g, '').length)){
             //I parse the room and add it to the database
             const text = 'INSERT INTO rooms(name) VALUES($1)'
-            const values = [roomReceived.name]
+            const values = [roomNameSanitized]
             client.query(text, values);
-            console.log("Room sent: "+ roomReceived.name);
+            console.log("Room sent: "+ roomNameSanitized);
             res.sendStatus(200);
             //Warns the listeners that a room has been sent
             roomBus.emit('roomSent');
