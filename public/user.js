@@ -13,7 +13,8 @@ function sendlogin(){
         data: loginObjJson,
         success: function(data){
             window.location = data.redirect
-        }
+        },
+        error: function(xhr, ajaxOptions, thrownError){alert(thrownError)}
     });
     //Clear input type
     credentialsLogin.userLogin.value = "";
@@ -32,7 +33,8 @@ function sendsign(){
         data: signObjJson,
         success: function(data){
             window.location = data.redirect
-        }
+        },
+        error: function(xhr, ajaxOptions, thrownError){alert(thrownError)}
     });
     //Clear input type
     credentialsSign.userSign.value = "";

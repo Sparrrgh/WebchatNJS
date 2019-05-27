@@ -71,14 +71,23 @@ passport.deserializeUser((id, callback) => {
 
 app.post('/register', function (req, res) {
     if(req.xhr){
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(req.body.password, salt);
-        client.query('INSERT INTO users(username, password) VALUES($1, $2)', [req.body.username, hash], (err, results) => {
-            if(err) {
-            console.log('Error when inserting user' + err)
-            }
-        })
-        console.log(req.body.username + ": "+ hash +' saved');
+        //Checks if password and username are both made of non-space characters
+        if((!(!(req.body.username).replace(/\s/g, '').length)) && (!(!(req.body.password).replace(/\s/g, '').length))){
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(req.body.password, salt);
+            client.query('INSERT INTO users(username, password) VALUES($1, $2)', [req.body.username, hash], (err, results) => {
+                if(err) {
+                    console.log('Error when inserting user ' + err)
+                    res.statusMessage = err;
+                    res.status(400).end();
+                }
+            })
+            console.log(req.body.username + ": "+ hash +' saved');
+        } else{
+            res.statusMessage = "Password or username not valid";
+            res.status(400).end();
+        }
+        
     }
 });
 
