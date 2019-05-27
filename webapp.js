@@ -25,6 +25,8 @@ var messageBus = new EventEmitter();
 messageBus.setMaxListeners(100);
 var roomBus = new EventEmitter();
 roomBus.setMaxListeners(100);
+var userBus = new EventEmitter();
+userBus.setMaxListeners(100);
 
 //connection to db
 const {Client}=require('pg')
@@ -282,6 +284,47 @@ app.get('/rooms',isAuthenticated ,function (req, res) {
         }
     }
 });
+
+app.get('/users', function (req, res) {
+    //Check if it's a XMLHttpRequest
+    if(req.xhr){
+            //If it is I'll add a listener to wait for a message
+            var addUserListener = function(res){
+            userBus.once('eventSet', function(data){
+                const query = {
+                    // give the query a unique name
+                    name: 'fetch-user',
+                    text: 'SELECT username FROM users WHERE name = $1',
+                    values: [req.body.name]
+                }
+                console.log("I AM HERE 2");
+                client.query(query, (err, table) => {
+                    if (err) {
+                        console.log(err.stack)
+                    } else {
+                        console.log(table.rows);
+                        //Sends the last room added
+                        res.json(table.rows);
+                    }
+                });    
+            });
+            addUserListener(res)
+            console.log("Added one user listener");
+    }
+    }   
+});
+
+app.post('/users', function (req, res){
+    if(req.xhr){
+        var usersReceived = req.body;
+        const tx = 'update users SET name = $1 WHERE username = $2;'
+        const value = [usersReceived.name, req.user.username];
+        client.query(tx, value);
+        res.sendStatus(200);
+        userBus.emit("eventSet");
+    }
+});
+
 
 app.get('/', function (req, res) {
     if(req.user){

@@ -1,6 +1,7 @@
 $(document).ready(function(){
     //AJAX request to subscribe to the longpollig and get a listener
     var longPollMsg;
+    var longPollUsr;
     function subscribe() {
         function longPollMessage(){
             var currentRoom = $("#currentRoom")[0].textContent;
@@ -47,6 +48,29 @@ $(document).ready(function(){
                 timeout: 60000
             });
         }
+        function longPollUsers(){
+            var currentRoom = $("#currentRoom")[0].textContent;
+            longPollUsr = $.ajax({
+                method: 'GET',
+                url: '/users',
+                dataType: 'json',
+                data: {
+                    name : currentRoom,
+                },
+                success: function(data){
+                    var userList = $("#usersList");
+                    data.forEach(username => {
+                        userList.append("<li>"+ username.username +" </li>");
+                    });
+                },
+                complete: function(){
+                    longPollUsers()
+                },
+                error: function(xhr, ajaxOptions, thrownError){console.log("Longpolling users error: " + thrownError)},
+                timeout: 60000
+            });
+        }
+        longPollUsers();
         longPollRoom();
         longPollMessage();
     }
@@ -162,6 +186,19 @@ $(document).ready(function(){
                     }
                 }
             });
+
+            //Post to place our user in the current room
+            var currentRoom = event.target.value;
+            var currentRoomObj = { name: currentRoom};
+            var currentRoomObJson = JSON.stringify(currentRoomObj);
+            $.ajax({
+                method: 'POST',
+                url: '/users',
+                dataType: 'json',
+                contentType: 'application/json',
+                data:currentRoomObJson
+            });
+
             //Reset the ajax request to emit another one with the correct room set
             longPollMsg.abort();
         }
