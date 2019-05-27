@@ -1,9 +1,11 @@
 $(document).ready(function(){
     //AJAX request to subscribe to the longpollig and get a listener
+    var longPollMsg;
     function subscribe() {
         function longPollMessage(){
             var currentRoom = $("#currentRoom")[0].textContent;
-            $.ajax({
+            //I save the ajax request to reset it later on
+            longPollMsg = $.ajax({
                 method: 'GET',
                 url: '/chat',
                 dataType: 'json',
@@ -160,8 +162,9 @@ $(document).ready(function(){
                     }
                 }
             });
+            //Reset the ajax request to emit another one with the correct room set
+            longPollMsg.abort();
         }
-        
     });
 
     //This executes whenever the document is loaded
