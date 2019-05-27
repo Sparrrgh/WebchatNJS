@@ -157,6 +157,23 @@ app.get('/chat', isAuthenticated, function (req, res) {
     }
 });
 
+
+function getDateTime() {
+    var date = new Date();
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+    return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
+}
+
 app.post('/chat', isAuthenticated,function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
@@ -165,8 +182,9 @@ app.post('/chat', isAuthenticated,function (req, res) {
         console.log("sent a message: " + req.user.username);
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messageReceived.value).replace(/\s/g, '').length)){
-            const text = 'INSERT INTO messages(value, room ,time, username, today) VALUES($1, $2, $3, $4, $5)'
-            const values = [messageReceived.value,messageReceived.room, messageReceived.time, req.user.username,messageReceived.today]
+            var time=getDateTime();
+            const text = 'INSERT INTO messages(value, room ,time, username) VALUES($1, $2, $3, $4)'
+            const values = [messageReceived.value,messageReceived.room, time, req.user.username,]
             client.query(text, values);
             res.sendStatus(200);
             //Warns the listeners that a message has been sent
@@ -180,7 +198,6 @@ app.post('/chat', isAuthenticated,function (req, res) {
 
 
 //Rooms listener
-
 app.post('/rooms',isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){

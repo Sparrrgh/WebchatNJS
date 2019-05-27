@@ -55,30 +55,8 @@ $(document).ready(function(){
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messagebox.value).replace(/\s/g, '').length)){
             var currentRoom = ($("#currentRoom")[0]).textContent;
-            function getDateTime() {
-                var date = new Date();
-                var hour = date.getHours();
-                hour = (hour < 10 ? "0" : "") + hour;
-                var min  = date.getMinutes();
-                min = (min < 10 ? "0" : "") + min;
-                var sec  = date.getSeconds();
-                sec = (sec < 10 ? "0" : "") + sec;
-                return   hour + ":" + min + ":" + sec;
-            }
-            function getDateDay() {
-                var date = new Date();
-                var year = date.getFullYear();
-                var month = date.getMonth() + 1;
-                month = (month < 10 ? "0" : "") + month;
-                var day  = date.getDate();
-                day = (day < 10 ? "0" : "") + day;
-                return year + "/" + month + "/" + day;
-            }
-            var today=getDateDay();
-            console.log(today);
-           var time=getDateTime();
             //I create a JSON object and then make it in a string, naming could be better
-            var messageObj = {value: messagebox.value, room: currentRoom,time:time,today:today};
+            var messageObj = {value: messagebox.value, room: currentRoom};
             var messageObjJson = JSON.stringify(messageObj);
             //Setting up and sending the XHRequest
             $.ajax({
