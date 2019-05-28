@@ -55,7 +55,7 @@ $(document).ready(function(){
                 url: '/users',
                 dataType: 'json',
                 data: {
-                    name : currentRoom,
+                    room : currentRoom,
                 },
                 success: function(data){
                     var userList = $("#userList");
@@ -195,7 +195,7 @@ $(document).ready(function(){
 
             //Post to place our user in the current room
             var currentRoom = event.target.value;
-            var currentRoomObj = { name: currentRoom};
+            var currentRoomObj = { room : currentRoom};
             var currentRoomObJson = JSON.stringify(currentRoomObj);
             $.ajax({
                 method: 'POST',

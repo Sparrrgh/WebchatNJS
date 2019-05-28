@@ -304,7 +304,7 @@ app.get('/users', function (req, res) {
                 const query = {
                     // give the query a unique name
                     name: 'fetch-users',
-                    text: 'SELECT username, name FROM users'
+                    text: 'SELECT username, room FROM users'
                 }
                 client.query(query, (err, table) => {
                     if (err) {
@@ -312,7 +312,7 @@ app.get('/users', function (req, res) {
                     } else {
                         var selectedRows = [];
                         (table.rows).forEach(row => {
-                            if(row.name === req.query.name){
+                            if(row.room === req.query.room){
                                 selectedRows.push(row);
                             }
                         });
@@ -330,8 +330,8 @@ app.get('/users', function (req, res) {
 app.post('/users', function (req, res){
     if(req.xhr){    
         var userReceived = req.body;
-        const tx = 'UPDATE users SET name = $1 WHERE username = $2;'
-        const value = [userReceived.name, req.user.username];
+        const tx = 'UPDATE users SET room = $1 WHERE username = $2;'
+        const value = [userReceived.room, req.user.username];
         client.query(tx, value);
         res.sendStatus(200);
         userBus.emit("userSent");
