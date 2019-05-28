@@ -20,7 +20,7 @@ $(document).ready(function(){
                     var chatbox = $("#chatbox");
                     var str = data.time;
                     var res = str.split(";",1);
-                    var rep=str.replace(res+";","")
+                    var rep=str.replace(res+";","");
                     chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + data.username   +":</span> " + data.value + "</li>");
                     //Scroll the div to the bottom
                     chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
@@ -181,8 +181,11 @@ $(document).ready(function(){
                         //When data is received it's added to the chatbox
                         var chatbox = $("#chatbox");
                         data.forEach(message => {
+                            var str = message.time;
+                            var res = str.split(";",1);
+                            var rep=str.replace(res+";","")
                             //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                            chatbox.append("<li>" + "["+ message.time +"] "+ "<span>" + message.username   +":</span> " + message.value+"</li>");
+                            chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + message.username   +":</span> " + message.value+"</li>");
                         });
                         //Scroll the div to the bottom
                         chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
@@ -229,8 +232,11 @@ $(document).ready(function(){
                 var chatbox = $("#chatbox")
                 //When data is received it's added to the chatbox
                 data.forEach(message => {
+                    var str = message.time;
+                    var res = str.split(";",1);
+                    var rep=str.replace(res+";","")
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
-                    chatbox.append("<li>" + "["+ message.time +"] "+ "<span>" + message.username   +":</span> " + message.value+"</li>");
+                    chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + message.username   +":</span> " + message.value+"</li>");
                 });
                 //Scroll the div to the bottom
                 chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
