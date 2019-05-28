@@ -58,9 +58,10 @@ $(document).ready(function(){
                     name : currentRoom,
                 },
                 success: function(data){
-                    var userList = $("#usersList");
-                    data.forEach(username => {
-                        userList.append("<li>"+ username.username +" </li>");
+                    var userList = $("#userList");
+                    userList.empty();
+                    data.forEach(user => {
+                        userList.append("<li>"+ user.username +" </li>");
                     });
                 },
                 complete: function(){
@@ -156,6 +157,8 @@ $(document).ready(function(){
         var oldRoom = $("#currentRoom")[0];
         //Check if the room has to change
         if (oldRoom.textContent != event.target.value){
+            //Empty userlist
+            $("#userList").empty();
             //Empty chatbox
             $("#chatbox").empty();
             //Save room in title (from button calling the event)
@@ -186,6 +189,9 @@ $(document).ready(function(){
                     }
                 }
             });
+
+            //Reset the ajax request to emit another one with the correct room set
+            longPollUsr.abort();
 
             //Post to place our user in the current room
             var currentRoom = event.target.value;

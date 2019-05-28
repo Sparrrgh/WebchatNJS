@@ -104,10 +104,19 @@ app.post('/register', function (req, res) {
 app.post('/login',
     passport.authenticate('local'),
     function(req, res) {
+        const tx = 'UPDATE users SET name = $1 WHERE username = $2;'
+        const value = ['General', req.user.username];
+        client.query(tx, value);
+        userBus.emit("userSent");
         res.send({redirect: '/chat'});
   });
 
 app.get('/logout', function(req, res){
+
+    const tx = 'UPDATE users SET name = $1 WHERE username = $2;'
+    const value = ['', req.user.username];
+    client.query(tx, value);
+    userBus.emit("userSent");
     req.logout();
     res.redirect('/');
 });
@@ -288,40 +297,44 @@ app.get('/rooms',isAuthenticated ,function (req, res) {
 app.get('/users', function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
-            //If it is I'll add a listener to wait for a message
-            var addUserListener = function(res){
-            userBus.once('eventSet', function(data){
+        //If it is I'll add a listener to wait for a room
+        var addUserListener = function(res){
+            userBus.once('userSent', function(data){
+                //When a room is sent I'll return it by taking it from the array
                 const query = {
                     // give the query a unique name
-                    name: 'fetch-user',
-                    text: 'SELECT username FROM users WHERE name = $1',
-                    values: [req.body.name]
+                    name: 'fetch-users',
+                    text: 'SELECT username, name FROM users'
                 }
-                console.log("I AM HERE 2");
                 client.query(query, (err, table) => {
                     if (err) {
                         console.log(err.stack)
                     } else {
-                        console.log(table.rows);
-                        //Sends the last room added
-                        res.json(table.rows);
+                        var selectedRows = [];
+                        (table.rows).forEach(row => {
+                            if(row.name === req.query.name){
+                                selectedRows.push(row);
+                            }
+                        });
+                        console.log(selectedRows);
+                        res.json(selectedRows);
                     }
-                });    
-            });
-            addUserListener(res)
-            console.log("Added one user listener");
+                });
+            })
+        }
+        addUserListener(res)
+        console.log("Added one user listener");
     }
-    }   
 });
 
 app.post('/users', function (req, res){
-    if(req.xhr){
-        var usersReceived = req.body;
-        const tx = 'update users SET name = $1 WHERE username = $2;'
-        const value = [usersReceived.name, req.user.username];
+    if(req.xhr){    
+        var userReceived = req.body;
+        const tx = 'UPDATE users SET name = $1 WHERE username = $2;'
+        const value = [userReceived.name, req.user.username];
         client.query(tx, value);
         res.sendStatus(200);
-        userBus.emit("eventSet");
+        userBus.emit("userSent");
     }
 });
 
