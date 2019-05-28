@@ -52,7 +52,7 @@ input[type=text]{
   	border-radius: 4px;
     text-align: center;
     background-color: rgb(10, 10, 10);
-    width:40%;
+    width:44%;
     height: 20%;
     margin-left:30%;
     margin-right:30%;
@@ -65,7 +65,7 @@ input[type=password]{
   	border-radius: 4px;
     text-align: center;
     background-color: rgb(10, 10, 10); 
-    width:40%;
+    width:44%;
     height: 20%;
     margin-left:30%;
     margin-right:30%;

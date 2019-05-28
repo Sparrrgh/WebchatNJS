@@ -18,7 +18,10 @@ $(document).ready(function(){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the chatbox
                     var chatbox = $("#chatbox");
-                    chatbox.append("<li>" + "["+ data.time +"] "+ "<span>" + data.username   +":</span> " + data.value + "</li>");
+                    var str = data.time;
+                    var res = str.split(";",1);
+                    var rep=str.replace(res+";","")
+                    chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + data.username   +":</span> " + data.value + "</li>");
                     //Scroll the div to the bottom
                     chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
                 },
