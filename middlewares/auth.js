@@ -12,7 +12,6 @@ passport.use(new LocalStrategy((username, password, callback) => {
     values: [username]
   }
   pool.query(query, (err, table) => {
-      console.log("Inside query")
       if(err) {
         console.log('Error when selecting user on login  ' + err);
         return callback(err);
@@ -29,7 +28,6 @@ passport.use(new LocalStrategy((username, password, callback) => {
             }
           });
         } else {
-          console.log('other err');
           callback(null, false);
         }
       }
