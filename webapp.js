@@ -1,16 +1,12 @@
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var path = require('path');
-var bcrypt = require('bcryptjs');
-var session = require('express-session')
-const createDOMPurify = require('dompurify');
-const { JSDOM } = require('jsdom');
- 
-const window = (new JSDOM('')).window;
-const DOMPurify = createDOMPurify(window);
+var users = require('./models/users.js');
+var rooms = require('./models/rooms.js');
+var auth = require('./middlewares/auth.js');
+var messages = require('./models/messages.js');
 
-
+var passport = auth.passport;
 var express = require('express');
+var session = require('express-session')
 var app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
@@ -28,123 +24,62 @@ roomBus.setMaxListeners(100);
 var userBus = new EventEmitter();
 userBus.setMaxListeners(100);
 
-//connection to db
-const {Client}=require('pg')
-const connectionString='postgressql://postgres:root@localhost:5433/chat_room'
-const client=new Client({
-    connectionString: connectionString
-})
-client.connect();
-
-
-passport.use(new LocalStrategy((username, password, callback) => {
-    client.query('SELECT id, username, password FROM users WHERE username=$1', [username], (err, result) => {
-      if(err) {
-        console.log('Error when selecting user on login  ' + err);
-        return callback(err);
-      }
-  
-      if(result.rows.length > 0) {
-        const first = result.rows[0];
-        bcrypt.compare(password, first.password, function(err, res) {
-          if(res) {
-            console.log(first.username + ' logged');
-            callback(null, { id: first.id, username: first.username });
-           } else {
-            console.log(err);
-            callback(null, false);
-           }
-         })
-       } else {
-        console.log('other err');
-        callback(null, false);
-       }
-    });
-  }));
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-})
-  
-passport.deserializeUser((id, callback) => {
-    client.query('SELECT id, username FROM users WHERE id = $1', [parseInt(id, 10)], (err, results) => {
-        if(err) {
-        console.log('Error when selecting user on session deserialize ' + err)
-        return callback(err)
-        }
-
-        callback(null, results.rows[0])
-    })
-})
-
-app.post('/register', function (req, res) {
-    if(req.xhr){
-        //Sanitize username for further use
-        var sanitizedUsername = DOMPurify.sanitize(req.body.username);
-        //Checks if password and username are both made of non-space characters
-        if((!(!sanitizedUsername.replace(/\s/g, '').length)) && (!(!(req.body.password).replace(/\s/g, '').length))){
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(req.body.password, salt);
-            client.query('INSERT INTO users(username, password) VALUES($1, $2)', [sanitizedUsername, hash], (err, results) => {
-                if(err) {
-                    console.log('Error when inserting user ' + err)
-                    res.statusMessage = err;
-                    res.status(400).end();
-                }
-            })
-            console.log(sanitizedUsername + ": "+ hash +' saved');
-        } else{
-            res.statusMessage = "Password or username not valid";
-            res.status(400).end();
-        }
-        
-    }
-});
-
 app.post('/login',
     passport.authenticate('local'),
     function(req, res) {
-        const tx = 'UPDATE users SET name = $1 WHERE username = $2;'
-        const value = ['General', req.user.username];
-        client.query(tx, value);
+        //DEBUG
+        console.log("Trying login");
+        users.updateUserRoom('General', req.user.username, (err) => {
+            if(err){
+                console.log(err.stack); 
+            }
+        });
         userBus.emit("userSent");
         res.send({redirect: '/chat'});
   });
 
 app.get('/logout', function(req, res){
-
-    const tx = 'UPDATE users SET name = $1 WHERE username = $2;'
-    const value = ['', req.user.username];
-    client.query(tx, value);
+    users.updateUserRoom('', req.user.username, (err) => {
+        if(err){
+            console.log(err.stack); 
+        }
+    });
     userBus.emit("userSent");
     req.logout();
     res.redirect('/');
 });
 
-function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()){
-        return next();
-    } else{ 
-        res.redirect('/');
+app.get('/', function (req, res) {
+    if(req.user){
+        res.redirect('/chat');
+    } else{
+        res.sendFile(path.join(__dirname + '/public/' +'/user.html'));
     }
-}
+});
 
-app.get('/chat', isAuthenticated, function (req, res) {
+
+//Controller models
+app.post('/register', function (req, res) {
+    if(req.xhr){
+        users.createUser(req.body.username, req.body.password, (err,results) => {
+            if(err){
+                res.statusMessage = err;
+                res.status(400).end();
+            }
+        });
+    }
+});
+
+app.get('/chat', auth.isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         //Send all messages from the current room
         if (req.query.nu === '1'){
-            const query = {
-                // give the query a unique name
-                name: 'fetch-messages-room',
-                text: 'SELECT * FROM messages WHERE room = $1 ORDER BY time',
-                values: [req.query.room]
-                }
-            client.query(query, (err, table) => {
-                if (err) {
-                    console.log(err.stack)
-                } else {
-                    res.json(table.rows);
+            messages.fetchMessagesRoom(req.query.room, (err,results) => {
+                if(err){
+                    console.log(err.stack);
+                } else{
+                    res.json(results);
                 }
             });
         }
@@ -152,30 +87,16 @@ app.get('/chat', isAuthenticated, function (req, res) {
             //If it is I'll add a listener to wait for a message
             var addMessageListener = function(res){
                 messageBus.once('messageSent', function(data){
-                    //When a message is sent I'll return it by taking it from the array
-                    //After checking if it is from the current room
-                    const query = {
-                        // give the query a unique name
-                        name: 'fetch-last-message',
-                        text: 'SELECT * FROM messages ORDER BY TIME DESC LIMIT 1'
-                        }
-                    client.query(query, (err, table) => {
-                        if (err) {
+                    messages.fetchLastMessage(req.query.room,(err,results) => {
+                        if(err){
                             console.log(err.stack)
-                        } else {
-                            var new_message = table.rows[0];
-                            console.log("Message sent in room: " + new_message.room);
-                            if(new_message.room === req.query.room){
-                                res.json(new_message);
-                            } else{
-                                res.json("");
-                            }
+                        } else{
+                            res.json(results);
                         }
                     });
-                    
-                })
+                });
             }
-            addMessageListener(res)
+            addMessageListener(res);
             console.log("Added one message listener");
         }
     }else{
@@ -185,107 +106,63 @@ app.get('/chat', isAuthenticated, function (req, res) {
     }
 });
 
-
-function getDateTime() {
-    var date = new Date();
-    var hour = date.getHours();
-    hour = (hour < 10 ? "0" : "") + hour;
-    var min  = date.getMinutes();
-    min = (min < 10 ? "0" : "") + min;
-    var sec  = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
-    var day  = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
-    return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
-}
-
-app.post('/chat', isAuthenticated,function (req, res) {
+app.post('/chat', auth.isAuthenticated,function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         //I parse the message and add it to the database
         var messageReceived = req.body;
-        //Sanitize the message body for further use
-        messageReceived.value = DOMPurify.sanitize(messageReceived.value)
-        console.log("sent a message: " + req.user.username);
-        //Checks if the message is formed by only spaces through a regex
-        if(!(!(messageReceived.value).replace(/\s/g, '').length)){
-            var time=getDateTime();
-            const text = 'INSERT INTO messages(value, room ,time, username) VALUES($1, $2, $3, $4)'
-            const values = [messageReceived.value,messageReceived.room, time, req.user.username,]
-            client.query(text, values);
-            res.sendStatus(200);
-            //Warns the listeners that a message has been sent
-            messageBus.emit('messageSent');
-        } else {
-            //If the message is composed of only spaces I send a Bad Request status code
-            res.sendStatus(400); 
-        }
+        messages.createMessage(messageReceived.value, messageReceived.room, req.user.username, (err) => {
+            if(err){
+                res.sendStatus(400);
+            } else{
+                res.sendStatus(200);
+                //Warns the listeners that a message has been sent
+                messageBus.emit('messageSent');
+            }
+        });
     }
 });
-
 
 //Rooms listener
-app.post('/rooms',isAuthenticated, function (req, res) {
+app.post('/rooms', auth.isAuthenticated, function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
-        //Sanitized the room name for further use
-        var roomNameSanitized= DOMPurify.sanitize(req.body.name)
-        //Checks if the room name is formed by only spaces through a regex
-        if(!(!roomNameSanitized.replace(/\s/g, '').length)){
-            //I parse the room and add it to the database
-            const text = 'INSERT INTO rooms(name) VALUES($1)'
-            const values = [roomNameSanitized]
-            client.query(text, values);
-            console.log("Room sent: "+ roomNameSanitized);
-            res.sendStatus(200);
-            //Warns the listeners that a room has been sent
-            roomBus.emit('roomSent');
-        } else {  
-            //If the room name is composed of only spaces I send a Bad Request status code
-            res.sendStatus(400);
-        }
-        
+        rooms.createRoom(req.body.name, (err) => {
+            if(err){
+                res.sendStatus(400);
+            } else{
+                res.sendStatus(200);
+                //Warns the listeners that a room has been sent
+                roomBus.emit('roomSent');
+            }
+        });
     }
 });
 
-app.get('/rooms',isAuthenticated ,function (req, res) {
+
+app.get('/rooms',auth.isAuthenticated ,function (req, res) {
     //Check if it's a XMLHttpRequest
     if(req.xhr){
         if(req.query.nu === '1'){
             //Send all rooms
-            const query = {
-                // give the query a unique name
-                name: 'fetch-rooms',
-                text: 'SELECT * FROM rooms'
-                }
-            client.query(query, (err, table) => {
-                if (err) {
-                    console.log(err.stack)
+            rooms.fetchRooms((err, results) => {
+                if(err){
+                    console.log(err.stack);
                 } else {
-                    res.json(table.rows);
+                    res.json(results);
                 }
-            });
+            })
         }else{
             //If it is I'll add a listener to wait for a room
             var addRoomListener = function(res){
                 roomBus.once('roomSent', function(data){
-                    //When a room is sent I'll return it by taking it from the array
-                    const query = {
-                        // give the query a unique name
-                        name: 'fetch-last-room',
-                        text: 'SELECT * FROM rooms ORDER BY ID DESC LIMIT 1'
-                        }
-                    client.query(query, (err, table) => {
+                    rooms.fetchLastRoom((err, results) => {
                         if (err) {
-                            console.log(err.stack)
+                            console.log(err.stack);
                         } else {
-                            //Sends the last room added
-                            res.json(table.rows[0]);
+                            res.json(results);
                         }
-                    });
+                    })
                 })
             }
             addRoomListener(res)
@@ -300,24 +177,11 @@ app.get('/users', function (req, res) {
         //If it is I'll add a listener to wait for a room
         var addUserListener = function(res){
             userBus.once('userSent', function(data){
-                //When a room is sent I'll return it by taking it from the array
-                const query = {
-                    // give the query a unique name
-                    name: 'fetch-users',
-                    text: 'SELECT username, room FROM users'
-                }
-                client.query(query, (err, table) => {
+                users.fetchUsersRoom(req.query.room, (err, results) => {
                     if (err) {
                         console.log(err.stack)
                     } else {
-                        var selectedRows = [];
-                        (table.rows).forEach(row => {
-                            if(row.room === req.query.room){
-                                selectedRows.push(row);
-                            }
-                        });
-                        console.log(selectedRows);
-                        res.json(selectedRows);
+                        res.json(results);
                     }
                 });
             })
@@ -328,25 +192,18 @@ app.get('/users', function (req, res) {
 });
 
 app.post('/users', function (req, res){
-    if(req.xhr){    
-        var userReceived = req.body;
-        const tx = 'UPDATE users SET room = $1 WHERE username = $2;'
-        const value = [userReceived.room, req.user.username];
-        client.query(tx, value);
-        res.sendStatus(200);
+    if(req.xhr){
+        users.updateUserRoom(req.body.room, req.user.username, (err) => {
+            if(err){
+                res.sendStatus(500);
+                console.log(err.stack); 
+            } else{
+                res.sendStatus(200);
+            }
+        });
         userBus.emit("userSent");
     }
 });
-
-
-app.get('/', function (req, res) {
-    if(req.user){
-        res.redirect('/chat');
-    } else{
-        res.sendFile(path.join(__dirname + '/public/' +'/user.html'));
-    }
-});
-
 
 app.listen(8080, function () {
     console.log('Server intialized on port 8080');
