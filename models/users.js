@@ -1,22 +1,28 @@
-var db = require('./db.js');
-var pool = db.pool;
 var bcrypt = require('bcryptjs');
+var db = require('../middlewares/db')
+, pool = db.pool;
+
+//DOMPurify setup
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
- 
 const window = (new JSDOM('')).window;
 const DOMPurify = createDOMPurify(window);
 
+//Setup event listeners
+var EventEmitter = require('events').EventEmitter;
+var userBus = new EventEmitter();
+userBus.setMaxListeners(100);
 
 function createUser(username, password, callback){
     //Sanitize username for further use
     var sanitizedUsername = DOMPurify.sanitize(username);
     //Checks if password and username are both made of non-space characters
     if((!(!sanitizedUsername.replace(/\s/g, '').length)) && (!(!(password).replace(/\s/g, '').length))){
+        //Hash the password before saving it
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(password, salt);
+
         const query = {
-            // give the query a unique name
             name: 'create-user',
             text: 'INSERT INTO users(username, password) VALUES($1, $2)',
             values: [sanitizedUsername, hash]
@@ -37,30 +43,33 @@ function createUser(username, password, callback){
 function fetchUsersRoom(room, callback){
     //Fetches the users in the current room
     const query = {
-        // give the query a unique name
         name: 'fetch-users-room',
         text: 'SELECT username, room FROM users'
     }
-    pool.query(query, (err, table) => {
-        if (err) {
-            callback(err,null);
-        } else {
-            var selectedRows = [];
-            (table.rows).forEach(row => {
-                if(row.room === room){
-                    selectedRows.push(row);
-                }
-            });
-            console.log(selectedRows);
-            callback(null,selectedRows)
-        }
-    });
+    
+    //Waits for the event of a user entering a room
+    userBus.once('userSent', (room) => {
+        pool.query(query, (err, table) => {
+            if (err) {
+                callback(err,null);
+            } else {
+                var selectedRows = [];
+                (table.rows).forEach(row => {
+                    if(row.room === room){
+                        selectedRows.push(row);
+                    }
+                });
+                console.log(selectedRows);
+                callback(null,selectedRows)
+            }
+        });
+    })
+    console.log("Added one user listener");
 }
 
 function updateUserRoom(room, username, callback){
     //Updates the user position
     const query = {
-        // give the query a unique name
         name: 'update-user-room',
         text: 'UPDATE users SET room = $1 WHERE username = $2',
         values : [room, username]
@@ -70,6 +79,8 @@ function updateUserRoom(room, username, callback){
             callback(err);
         } else {
             callback(null);
+            //Warns the listeners that a user changed position
+            userBus.emit("userSent");
         }
     });
 }

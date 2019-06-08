@@ -1,12 +1,13 @@
-var passport = require('passport');
-var bcrypt = require('bcryptjs');
-var LocalStrategy = require('passport-local').Strategy;
-var db = require('../models/db.js');
-var pool = db.pool;
+var passport = require('passport')
+, bcrypt = require('bcryptjs')
+, LocalStrategy = require('passport-local').Strategy;
 
+var db = require('./db')
+, pool = db.pool;
+
+//New local strategy to authenticate using username and password
 passport.use(new LocalStrategy((username, password, callback) => {
   const query = {
-    // give the query a unique name
     name: 'search-user',
     text: 'SELECT id, username, password FROM users WHERE username=$1',
     values: [username]
@@ -18,6 +19,7 @@ passport.use(new LocalStrategy((username, password, callback) => {
       } else {
         if(table.rows.length > 0) {
           const first = table.rows[0];
+          //Comparing hashes
           bcrypt.compare(password, first.password, function(err, res) {
             if(res) {
               console.log(first.username + ' logged');

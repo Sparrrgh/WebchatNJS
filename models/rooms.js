@@ -1,10 +1,16 @@
-var db = require('./db.js');
-var pool = db.pool;
+var db = require('../middlewares/db')
+, pool = db.pool;
+
+//DOMPurify setup
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
- 
 const window = (new JSDOM('')).window;
 const DOMPurify = createDOMPurify(window);
+
+//Setup event listeners
+var EventEmitter = require('events').EventEmitter;
+var roomBus = new EventEmitter();
+roomBus.setMaxListeners(100);
 
 function createRoom(name,callback){
     //Sanitized the room name for further use
@@ -12,7 +18,6 @@ function createRoom(name,callback){
     //Checks if the room name is formed by only spaces through a regex
     if(!(!roomNameSanitized.replace(/\s/g, '').length)){
         const query = {
-            // give the query a unique name
             name: 'create-room',
             text: 'INSERT INTO rooms(name) VALUES($1)',
             values : [roomNameSanitized]
@@ -23,6 +28,8 @@ function createRoom(name,callback){
             } else {
                 console.log("Room sent: "+ roomNameSanitized);
                 callback(null);
+                //Warns the listeners that a room has been created
+                roomBus.emit('roomSent');
             }
         });
     } else {
@@ -33,9 +40,8 @@ function createRoom(name,callback){
 }
 
 function fetchRooms(callback){
-    //Send all rooms
+    //Fetches all rooms created
     const query = {
-        // give the query a unique name
         name: 'fetch-rooms',
         text: 'SELECT * FROM rooms'
     }
@@ -48,20 +54,23 @@ function fetchRooms(callback){
     });
 }
 function fetchLastRoom(callback){
-    //When a room is sent I'll return it by taking it from the db
+    //Fetches the last room created
     const query = {
-        // give the query a unique name
         name: 'fetch-last-room',
         text: 'SELECT * FROM rooms ORDER BY ID DESC LIMIT 1'
-        }
-    pool.query(query, (err, table) => {
-        if (err) {
-            callback(err, null)
-        } else {
-            //Sends the last room added
-            callback(table.rows[0], null);
-        }
-    });
+    }       
+
+    //Waits for the event of a room being created
+    roomBus.once('roomSent', function(){
+        pool.query(query, (err, table) => {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, table.rows[0]);
+            }
+        });
+    })
+    console.log("Added one room listener");
 }
 
 exports.createRoom = createRoom;
