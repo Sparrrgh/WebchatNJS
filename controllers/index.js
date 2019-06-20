@@ -42,17 +42,4 @@ router.get('/logout', function(req, res){
     req.logout();
     res.redirect('/');
 });
-
-//Controller models
-router.post('/register', function (req, res) {
-    if(req.xhr){
-        users.createUser(req.body.username, req.body.password, (err,results) => {
-            if(err){
-                res.statusMessage = err;
-                res.status(400).end();
-            }
-        });
-    }
-});
-
 module.exports = router

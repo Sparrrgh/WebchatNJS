@@ -23,15 +23,19 @@ function sendlogin(){
 
 
 function sendsign(){
-    var signObj = {username: credentialsSign.userSign.value, password: credentialsSign.passwdSign.value};
+    var signObj = {
+        username: credentialsSign.userSign.value, 
+        password: credentialsSign.passwdSign.value
+    };
     var signObjJson = JSON.stringify(signObj);
     $.ajax({
         method: 'POST',
-        url: '/register',
+        url: '/users/create',
         dataType: 'json',
         contentType: 'application/json',
         data: signObjJson,
         success: function(data){
+            alert('Registered');
             window.location = data.redirect
         },
         error: function(xhr, ajaxOptions, thrownError){alert(thrownError)}
