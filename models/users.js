@@ -46,9 +46,8 @@ function fetchUsersRoom(room, callback){
         name: 'fetch-users-room',
         text: 'SELECT username, room FROM users'
     }
-    
     //Waits for the event of a user entering a room
-    userBus.once('userSent', (room) => {
+    userBus.once('userSent', () => {
         pool.query(query, (err, table) => {
             if (err) {
                 callback(err,null);
