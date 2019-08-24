@@ -1,29 +1,11 @@
-WebchatNJS
+Project created with Claudia Luisa Crippa for the web programming course at University of Milan 'La Statale'.
 
-Progetto:
-Il progetto consiste nella realizzazione di una webchat.
-La webchat sarà provvista di un sistema di autenticazione e di diverse stanze dove gli utenti potranno interagire tra di loro.
-Gli utenti potranno creare ed eliminare (se autorizzati) le stanze.
-Il frontend sarà realizzato con l'utilizzo di HTML5, CSS3 e JQuery. Le viste principali consisteranno della pagina di login, quella di registrazione e quella delle stanze che permetterà di agire sulle stesse e di chattare.
-Il backend sarà invece realizzato con l'utilizzo di Node.js e un database che servirà a mantenere salvate le chat e gli utenti.
-Le interazioni tra frontend e backend verranno realizzate mediante AJAX, come richiesto dalla documentazione.
+The project is a webchat coded in Javascript following the MVC pattern.
+It has a registration and login system, created with passport and PostgreSQL.
+The database stores the users for the login system, the messages sent and the rooms created by the users.
+The input is sanitized using DOMpurify in the backend.
 
-
-
-
-Progettazione dettagliata totale:	4h	
-Frontend:
-	-	Login				2h
-	-	Registrazione		2h
-	-	Stanze				8h
-Backend:
-	-	Creazione stanze	2h
-	-	Eliminazione stanze	3h
-	-	Creazione utente	2h
-	-	Messaggi			4h
-	- 	Autenticazione		8h
-
-Dipendenze:
+Requirements:
 	express
 		npm install express --save
 		
@@ -42,6 +24,60 @@ Dipendenze:
 		npm install dompurify --save
 	jsdom
 		npm install jsdom --save
+
+
+Table creation queries:
+
+-- Table: public.users
+
+-- DROP TABLE public.users;
+
+CREATE TABLE public.users
+(
+  id bigint NOT NULL DEFAULT nextval('users_id_seq'::regclass),
+  username character varying(255),
+  password character varying(100),
+  room text,
+  CONSTRAINT users_pkey PRIMARY KEY (id),
+  CONSTRAINT users_username_key UNIQUE (username)
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+-- Table: public.rooms
+
+-- DROP TABLE public.rooms;
+
+CREATE TABLE public.rooms
+(
+  name text NOT NULL,
+  id integer NOT NULL DEFAULT nextval('rooms_id_room_seq'::regclass)
+)
+WITH (
+  OIDS=FALSE
+);
+
+
+-- Table: public.messages
+
+-- DROP TABLE public.messages;
+
+CREATE TABLE public.messages
+(
+  id integer NOT NULL DEFAULT nextval('messages_id_seq'::regclass),
+  value text NOT NULL,
+  room text NOT NULL,
+  "time" text NOT NULL,
+  username text,
+  CONSTRAINT messages_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+
 		 
 
 		
