@@ -1,5 +1,5 @@
-var bcrypt = require('bcryptjs');
-var db = require('../middlewares/db')
+const bcrypt = require('bcryptjs');
+const db = require('../middlewares/db')
 , pool = db.pool;
 
 //DOMPurify setup
@@ -9,18 +9,18 @@ const window = (new JSDOM('')).window;
 const DOMPurify = createDOMPurify(window);
 
 //Setup event listeners
-var EventEmitter = require('events').EventEmitter;
-var userBus = new EventEmitter();
+const EventEmitter = require('events').EventEmitter;
+const userBus = new EventEmitter();
 userBus.setMaxListeners(100);
 
 function createUser(username, password, callback){
     //Sanitize username for further use
-    var sanitizedUsername = DOMPurify.sanitize(username);
+    const sanitizedUsername = DOMPurify.sanitize(username);
     //Checks if password and username are both made of non-space characters
     if((!(!sanitizedUsername.replace(/\s/g, '').length)) && (!(!(password).replace(/\s/g, '').length))){
         //Hash the password before saving it
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(password, salt);
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
 
         const query = {
             name: 'create-user',
@@ -52,7 +52,7 @@ function fetchUsersRoom(room, callback){
             if (err) {
                 callback(err,null);
             } else {
-                var selectedRows = [];
+                let selectedRows = [];
                 (table.rows).forEach(row => {
                     if(row.room === room){
                         selectedRows.push(row);

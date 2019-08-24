@@ -1,10 +1,10 @@
 $(document).ready(function(){
     //AJAX request to subscribe to the longpollig and get a listener
-    var longPollMsg;
-    var longPollUsr;
+    let longPollMsg;
+    let longPollUsr;
     function subscribe() {
         function longPollMessage(){
-            var currentRoom = $("#currentRoom")[0].textContent;
+            let currentRoom = $("#currentRoom")[0].textContent;
             //I save the ajax request to reset it later on
             longPollMsg = $.ajax({
                 method: 'GET',
@@ -17,10 +17,10 @@ $(document).ready(function(){
                 success: function(data){
                     //Purify the input data to prevent XSS
                     //When data is received it's added to the chatbox
-                    var chatbox = $("#chatbox");
-                    var str = data.time;
-                    var res = str.split(";",1);
-                    var rep=str.replace(res+";","");
+                    let chatbox = $("#chatbox");
+                    let str = data.time;
+                    let res = str.split(";",1);
+                    let rep=str.replace(res+";","");
                     chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + data.username   +":</span> " + data.value + "</li>");
                     //Scroll the div to the bottom
                     chatbox.animate({ scrollTop: chatbox.prop('scrollHeight') }, 50);
@@ -52,7 +52,7 @@ $(document).ready(function(){
             });
         }
         function longPollUsers(){
-            var currentRoom = $("#currentRoom")[0].textContent;
+            let currentRoom = $("#currentRoom")[0].textContent;
             longPollUsr = $.ajax({
                 method: 'GET',
                 url: '/users',
@@ -61,7 +61,7 @@ $(document).ready(function(){
                     room : currentRoom,
                 },
                 success: function(data){
-                    var userList = $("#userList");
+                    let userList = $("#userList");
                     userList.empty();
                     data.forEach(user => {
                         userList.append("<li>"+ user.username +" </li>");
@@ -81,13 +81,13 @@ $(document).ready(function(){
 
     function sendMessage(){
         //Save messagebox element to reuse later
-        var messagebox = $("#messagebox")[0];
+        let messagebox = $("#messagebox")[0];
         //Checks if the message is formed by only spaces through a regex
         if(!(!(messagebox.value).replace(/\s/g, '').length)){
-            var currentRoom = ($("#currentRoom")[0]).textContent;
+            let currentRoom = ($("#currentRoom")[0]).textContent;
             //I create a JSON object and then make it in a string, naming could be better
-            var messageObj = {value: messagebox.value, room: currentRoom};
-            var messageObjJson = JSON.stringify(messageObj);
+            let messageObj = {value: messagebox.value, room: currentRoom};
+            let messageObjJson = JSON.stringify(messageObj);
             //Setting up and sending the XHRequest
             $.ajax({
                 method: 'POST',
@@ -136,12 +136,12 @@ $(document).ready(function(){
 
     //Sends POST request to create new room
     $("#createRoom").click(function(event) {
-        var newRoom = ($("#createRoomName")[0]).value;
+        let newRoom = ($("#createRoomName")[0]).value;
         //Checks if the room name is formed by only spaces through a regex
         if(!(!newRoom.replace(/\s/g, '').length)){
             //I create a JSON object and then make it in a string, naming could be better
-            var roomObj = {name: newRoom};
-            var roomObjJson = JSON.stringify(roomObj);
+            let roomObj = {name: newRoom};
+            let roomObjJson = JSON.stringify(roomObj);
             $("#createRoomName")[0].value = "";
             $.ajax({
                 method: 'POST',
@@ -157,7 +157,7 @@ $(document).ready(function(){
     
     //Change room buttons
     $("#roomList").on('click','input',function(event) {
-        var oldRoom = $("#currentRoom")[0];
+        let oldRoom = $("#currentRoom")[0];
         //Check if the room has to change
         if (oldRoom.textContent != event.target.value){
             //Empty userlist
@@ -165,7 +165,7 @@ $(document).ready(function(){
             //Empty chatbox
             $("#chatbox").empty();
             //Save room in title (from button calling the event)
-            var currentRoom = event.target.value;
+            let currentRoom = event.target.value;
             oldRoom.textContent = currentRoom;
             //Request the messages from the new room
             $.ajax({
@@ -179,11 +179,11 @@ $(document).ready(function(){
                 success: function(data){
                     if(data.length > 0){
                         //When data is received it's added to the chatbox
-                        var chatbox = $("#chatbox");
+                        let chatbox = $("#chatbox");
                         data.forEach(message => {
-                            var str = message.time;
-                            var res = str.split(";",1);
-                            var rep=str.replace(res+";","")
+                            let str = message.time;
+                            let res = str.split(";",1);
+                            let rep=str.replace(res+";","")
                             //Purify each and every element to prevent XSS, not exactly the fastest approach...
                             chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + message.username   +":</span> " + message.value+"</li>");
                         });
@@ -200,9 +200,8 @@ $(document).ready(function(){
             longPollUsr.abort();
 
             //Post to place our user in the current room
-            var currentRoom = event.target.value;
-            var currentRoomObj = { room : currentRoom};
-            var currentRoomObJson = JSON.stringify(currentRoomObj);
+            let currentRoomObj = { room : currentRoom};
+            let currentRoomObJson = JSON.stringify(currentRoomObj);
             $.ajax({
                 method: 'POST',
                 url: '/users',
@@ -229,12 +228,12 @@ $(document).ready(function(){
           },
         success: function(data){
             if(data.length > 0){
-                var chatbox = $("#chatbox")
+                let chatbox = $("#chatbox")
                 //When data is received it's added to the chatbox
                 data.forEach(message => {
-                    var str = message.time;
-                    var res = str.split(";",1);
-                    var rep=str.replace(res+";","")
+                    let str = message.time;
+                    let res = str.split(";",1);
+                    let rep=str.replace(res+";","")
                     //Purify each and every element to prevent XSS, not exactly the fastest approach...
                     chatbox.append("<li>" + "["+ rep +"] "+ "<span>" + message.username   +":</span> " + message.value+"</li>");
                 });

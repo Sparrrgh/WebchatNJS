@@ -3,8 +3,8 @@ $( function() {
   })
 
 function sendlogin(){
-    var loginObj = {username: credentialsLogin.userLogin.value, password: credentialsLogin.passwdLogin.value};
-    var loginObjJson = JSON.stringify(loginObj);
+    let loginObj = {username: credentialsLogin.userLogin.value, password: credentialsLogin.passwdLogin.value};
+    let loginObjJson = JSON.stringify(loginObj);
     $.ajax({
         method: 'POST',
         url: '/login',
@@ -23,11 +23,11 @@ function sendlogin(){
 
 
 function sendsign(){
-    var signObj = {
+    let signObj = {
         username: credentialsSign.userSign.value, 
         password: credentialsSign.passwdSign.value
     };
-    var signObjJson = JSON.stringify(signObj);
+    let signObjJson = JSON.stringify(signObj);
     $.ajax({
         method: 'POST',
         url: '/users/create',
@@ -36,7 +36,6 @@ function sendsign(){
         data: signObjJson,
         success: function(data){
             alert('Registered');
-            window.location = data.redirect
         },
         error: function(xhr, ajaxOptions, thrownError){alert(thrownError)}
     });

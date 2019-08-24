@@ -1,4 +1,4 @@
-var express = require('express')
+const express = require('express')
   , router = express.Router()
   , rooms = require('../models/rooms')
   , auth = require('../middlewares/auth')

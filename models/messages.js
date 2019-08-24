@@ -1,4 +1,4 @@
-var db = require('../middlewares/db')
+const db = require('../middlewares/db')
 , pool = db.pool;
 
 //DOMPurify setup
@@ -8,22 +8,22 @@ const window = (new JSDOM('')).window;
 const DOMPurify = createDOMPurify(window);
 
 //Setup event listeners
-var EventEmitter = require('events').EventEmitter;
-var messageBus = new EventEmitter();
+const EventEmitter = require('events').EventEmitter;
+const messageBus = new EventEmitter();
 messageBus.setMaxListeners(100);
 
 function getDateTime() {
-    var date = new Date();
-    var hour = date.getHours();
+    let date = new Date();
+    let hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
-    var min  = date.getMinutes();
+    let min  = date.getMinutes();
     min = (min < 10 ? "0" : "") + min;
-    var sec  = date.getSeconds();
+    let sec  = date.getSeconds();
     sec = (sec < 10 ? "0" : "") + sec;
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
     month = (month < 10 ? "0" : "") + month;
-    var day  = date.getDate();
+    let day  = date.getDate();
     day = (day < 10 ? "0" : "") + day;
     return year + "/" + month + "/" + day + ";" + hour + ":" + min + ":" + sec;
 }
@@ -59,7 +59,7 @@ function fetchLastMessage(room,callback){
             if (err) {
                 callback(err, null)
             } else {
-                var new_message = table.rows[0];
+                const new_message = table.rows[0];
                 console.log("Message sent in room: " + new_message.room);
                 //Checks if the message is from the current room
                 if(new_message.room === room){
@@ -75,10 +75,10 @@ function fetchLastMessage(room,callback){
 
 function createMessage(value, room, username, callback){
     //Sanitized the message value for further use
-    valueSanitized = DOMPurify.sanitize(value)
+    const valueSanitized = DOMPurify.sanitize(value)
     //Checks if the message is formed by only spaces through a regex
     if(!(!(value).replace(/\s/g, '').length)){
-        var time=getDateTime();
+        const time=getDateTime();
         const query = {
             name: 'create-message',
             text: 'INSERT INTO messages(value, room ,time, username) VALUES($1, $2, $3, $4)',

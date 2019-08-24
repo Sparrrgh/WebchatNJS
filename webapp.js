@@ -1,10 +1,10 @@
-var express = require('express')
+const express = require('express')
 , session = require('express-session')
 , auth = require('./middlewares/auth.js')
 , passport = auth.passport;
 
 //Setup express
-var app = express();
+const app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(session({

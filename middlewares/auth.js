@@ -1,8 +1,8 @@
-var passport = require('passport')
+const passport = require('passport')
 , bcrypt = require('bcryptjs')
 , LocalStrategy = require('passport-local').Strategy;
 
-var db = require('./db')
+const db = require('./db')
 , pool = db.pool;
 
 //New local strategy to authenticate using username and password

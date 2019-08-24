@@ -1,11 +1,11 @@
-var express = require('express')
+const express = require('express')
   , router = express.Router()
   , path = require('path')
   , users = require('../models/users')
   , auth = require('../middlewares/auth');
 
 
-var passport = auth.passport;
+const passport = auth.passport;
 
 //I implement the routers for each model
 router.use('/chat', require('./messages'));

@@ -1,4 +1,4 @@
-var db = require('../middlewares/db')
+const db = require('../middlewares/db')
 , pool = db.pool;
 
 //DOMPurify setup
@@ -8,13 +8,13 @@ const window = (new JSDOM('')).window;
 const DOMPurify = createDOMPurify(window);
 
 //Setup event listeners
-var EventEmitter = require('events').EventEmitter;
-var roomBus = new EventEmitter();
+const EventEmitter = require('events').EventEmitter;
+const roomBus = new EventEmitter();
 roomBus.setMaxListeners(100);
 
 function createRoom(name,callback){
     //Sanitized the room name for further use
-    var roomNameSanitized = DOMPurify.sanitize(name)
+    const roomNameSanitized = DOMPurify.sanitize(name)
     //Checks if the room name is formed by only spaces through a regex
     if(!(!roomNameSanitized.replace(/\s/g, '').length)){
         const query = {
