@@ -1,4 +1,4 @@
-Project created with Claudia Luisa Crippa for the web programming course at University of Milan 'La Statale'.
+Project created with Claudia Luisa Crippa for the web programming course at the University of Milan 'La Statale'.
 
 The project is a webchat coded in Javascript following the MVC pattern.
 It has a registration and login system, created with passport and PostgreSQL.
