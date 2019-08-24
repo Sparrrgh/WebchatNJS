@@ -6,9 +6,9 @@ The database stores the users for the login system, the messages sent and the ro
 The input is sanitized using DOMpurify in the backend.
 
 Requirements:
+
 	express
 		npm install express --save
-		
 	PostgreSQL
 	PgAdmin 4
 		 npm install pg

@@ -266,6 +266,17 @@ $(document).ready(function(){
             }
         }
     });
+
+    //Post to place our user in the starting room
+    const startingObj = { room : 'General'};
+    const startingRoomObJson = JSON.stringify(startingObj);
+    $.ajax({
+        method: 'POST',
+        url: '/users',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: startingRoomObJson
+    });
     //When the page is loaded the client subscribes to receive realtime data
     subscribe();
     //Creates the jQuery dialog object
